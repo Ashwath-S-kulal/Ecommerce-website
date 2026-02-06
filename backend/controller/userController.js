@@ -6,6 +6,94 @@ import { Session } from "../models/sessionModel.js";
 import { sendOTPMail } from "../emailVerify/sendOTPMail.js";
 import cloudinary from "../utils/cloudinary.js";
 
+export const google = async (req, res) => {
+  try {
+    const { email, name, photo } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+    let user = await User.findOne({ email });
+
+    //  LOGIN
+    if (user) {
+      const token = jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+      );
+
+      user.isLoggedIn = true;
+      await user.save();
+
+      const { password, ...rest } = user._doc;
+
+      return res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        })
+        .status(200)
+        .json({
+          success: true,
+          user: rest,
+        });
+    }
+
+    //  REGISTER
+    const nameParts = name?.trim().split(" ") || [];
+    const firstName = nameParts[0] || "Google";
+    const lastName = nameParts.slice(1).join(" ") || "User";
+    const generatedPassword =
+      Math.random().toString(36).slice(-8) +
+      Math.random().toString(36).slice(-8);
+
+    const hashedPassword = bcrypt.hashSync(generatedPassword, 10);
+
+    const newUser = new User({
+      firstName,
+      lastName,
+      email,
+      password: hashedPassword,
+      profilePic: photo || "",
+      isVerified: true,
+      isLoggedIn: true,
+    });
+
+    await newUser.save(); 
+    const token = jwt.sign(
+      { id: newUser._id, role: newUser.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    const { password, ...rest } = newUser._doc;
+
+    return res
+      .cookie("access_token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      })
+      .status(201)
+      .json({
+        success: true,
+        user: rest,
+      });
+
+  } catch (error) {
+    console.error("GOOGLE AUTH ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const register = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
@@ -447,5 +535,23 @@ export const updateUser= async (req, res) => {
       success: false,
       message: error.message,
     })
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    const userToDelete = await User.findById(req.params.id);
+    if (!userToDelete) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    if (req.user.id !== req.params.id && req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'You can delete only your account!' });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+    return res.status(200).json({ success: true, message: 'User has been deleted...' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };

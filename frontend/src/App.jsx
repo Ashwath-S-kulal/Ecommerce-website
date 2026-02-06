@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button } from './components/ui/button'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import SignUp from './pages/SignUp'

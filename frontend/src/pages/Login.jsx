@@ -16,6 +16,7 @@ import { toast } from "sonner"
 import axios from "axios"
 import { useDispatch } from "react-redux"
 import { setUser } from "@/redux/userSlice"
+import OAuth from "@/components/OAuth"
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
@@ -132,6 +133,7 @@ export default function Login() {
                   "Login"
                 )}
               </Button>
+              <OAuth/>
             </div>
           </form>
         </CardContent>
