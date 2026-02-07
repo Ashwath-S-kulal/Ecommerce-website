@@ -132,7 +132,7 @@ export default function Wishlist() {
                             Your wishlist is empty
                         </h2>
                         <p className="text-gray-500 mt-2">
-                            Save items you love to buy later ❤️
+                            Save items you love to buy later
                         </p>
                     </div>
                     <Button asChild className="bg-pink-600 hover:bg-pink-700 px-8">
