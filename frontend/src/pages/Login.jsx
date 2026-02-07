@@ -16,7 +16,6 @@ import { toast } from "sonner"
 import axios from "axios"
 import { useDispatch } from "react-redux"
 import { setUser } from "@/redux/userSlice"
-import OAuth from "@/components/OAuth"
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
@@ -26,7 +25,7 @@ export default function Login() {
     password: "",
   })
   const navigate = useNavigate()
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -50,9 +49,11 @@ export default function Login() {
 
       if (res.data.success) {
         toast.success(res.data.message)
-        navigate("/") 
+        navigate("/")
         dispatch(setUser(res.data.user)); //redux
         localStorage.setItem("accessToken", res.data.accessToken); //store token
+        dispatch(setUser(res.data.user));
+        
       }
     } catch (error) {
       console.error(error)
@@ -133,7 +134,6 @@ export default function Login() {
                   "Login"
                 )}
               </Button>
-              <OAuth/>
             </div>
           </form>
         </CardContent>

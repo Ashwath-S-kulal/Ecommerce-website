@@ -46,7 +46,7 @@ export default function AdminProduct() {
   const [editProduct, setEditProduct] = useState("")
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
-const [sortOrder, setSortOrder] = useState("")
+  const [sortOrder, setSortOrder] = useState("")
   const accessToken = localStorage.getItem("accessToken")
   const dispatch = useDispatch()
 
@@ -119,36 +119,36 @@ const [sortOrder, setSortOrder] = useState("")
   }
 
   const filteredProducts = products
-  .filter((product) =>
-    product.productName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  )
-  .sort((a, b) => {
-    if (sortOrder === "lowToHigh") {
-      return a.productPrice - b.productPrice
-    }
-    if (sortOrder === "highToLow") {
-      return b.productPrice - a.productPrice
-    }
-    return 0
-  })
+    .filter((product) =>
+      product.productName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortOrder === "lowToHigh") {
+        return a.productPrice - b.productPrice
+      }
+      if (sortOrder === "highToLow") {
+        return b.productPrice - a.productPrice
+      }
+      return 0
+    })
 
 
   return (
     <div className='py-20 pr-20 flex flex-col gap-3 min-h-screen bg-gray-100'>
       <div className='flex justify-between'>
         <div className='relative bg-white rounded-lg'>
-<Input
-  type='text'
-  placeholder="Search Product..."
-  className="w-[400px] items-center"
-  value={searchTerm}
-  onChange={(e) => setSearchTerm(e.target.value)}
-/>
+          <Input
+            type='text'
+            placeholder="Search Product..."
+            className="w-[400px] items-center"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <Search className='absolute right-3 top-1.5 text-gray-500' />
         </div>
-<Select onValueChange={(value) => setSortOrder(value)}>
+        <Select onValueChange={(value) => setSortOrder(value)}>
           <SelectTrigger className="w-[200px] bg-white">
             <SelectValue placeholder="Sort by Price" />
           </SelectTrigger>

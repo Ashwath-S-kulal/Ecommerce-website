@@ -20,6 +20,7 @@ import AdminUsers from './pages/Admin/AdminUsers'
 import UserInfo from './pages/Admin/UserInfo'
 import ProtectedRoute from './components/ProtectedRoute'
 import SingleProducts from './pages/SingleProducts'
+import Wishlist from './pages/Wishlist'
 
 export default function App() {
   const router = createBrowserRouter([
@@ -58,6 +59,10 @@ export default function App() {
     {
       path: '/cart',
       element: <ProtectedRoute><Navbar /><Cart /></ProtectedRoute>
+    },
+     {
+      path: '/wishlist',
+      element: <ProtectedRoute><Navbar /><Wishlist /></ProtectedRoute>
     },
     {
       path: "/dashboard",

@@ -144,15 +144,14 @@ const AllUsers = () => {
     }
   };
 
-  if (loading) return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-      <div className="relative">
-        <div className="h-16 w-16 rounded-full border-t-4 border-b-4 border-indigo-600 animate-spin"></div>
-        <div className="absolute top-0 left-0 h-16 w-16 rounded-full border-t-4 border-b-4 border-indigo-200 animate-pulse"></div>
+if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+        <p className="mt-4 text-gray-500 font-medium">Loading user directory...</p>
       </div>
-      <p className="mt-6 text-indigo-900 font-semibold tracking-wide animate-pulse">Synchronizing Data...</p>
-    </div>
-  );
+    );
+  }
 
   if (error) return (
     <div className="max-w-md mx-auto mt-20 p-8 bg-white border border-red-100 shadow-2xl rounded-2xl text-center">
