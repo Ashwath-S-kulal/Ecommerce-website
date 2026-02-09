@@ -1,7 +1,6 @@
 import { Wishlist } from "../models/wishlistModel.js";
 import { Product } from "../models/productModel.js";
 
-/* ===================== GET WISHLIST ===================== */
 export const getWishlist = async (req, res) => {
   try {
     const userId = req.id;
@@ -28,7 +27,6 @@ export const getWishlist = async (req, res) => {
   }
 };
 
-/* ===================== ADD TO WISHLIST ===================== */
 export const addToWishlist = async (req, res) => {
   try {
     const userId = req.id;
@@ -80,10 +78,8 @@ export const addToWishlist = async (req, res) => {
   }
 };
 
-/* ===================== REMOVE FROM WISHLIST ===================== */
 export const removeFromWishlist = async (req, res) => {
   try {
-    console.log("Removing from wishlist...");
     const userId = req.id;
     const { productId } = req.body;
 

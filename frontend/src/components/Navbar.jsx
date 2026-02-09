@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { Heart, ShoppingCart, TrafficCone } from "lucide-react";
+import { Link, NavLink } from "react-router-dom";
+import { Heart, ShoppingBag, User as UserIcon, LogOut, Home, LayoutGrid } from "lucide-react";
 import { Button } from "./ui/button";
 import axios from "axios";
 import { toast } from "sonner";
@@ -9,106 +9,143 @@ import { setUser } from "@/redux/userSlice";
 import { setCart, setWishlist } from "@/redux/productSlice";
 
 export default function Navbar() {
-  const { user } = useSelector(store => store.user);
-  const { cart } = useSelector(store => store.product);
-  const { wishlist } = useSelector(store => store.product); // ✅ add wishlist
+  const { user } = useSelector((store) => store.user);
+  const { cart, wishlist } = useSelector((store) => store.product);
   const accessToken = localStorage.getItem("accessToken");
-  const admin = user?.role === "admin" ? true : false
+  const isAdmin = user?.role === "admin";
   const dispatch = useDispatch();
-
-
 
   const logoutHandler = async () => {
     try {
       const res = await axios.post(`http://localhost:8000/api/user/logout`, {}, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      })
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
       if (res.data.success) {
-        dispatch(setUser(null))
-        dispatch(setCart({ items: [], totalPrice: 0 }))
-        dispatch(setWishlist({ items: [] }))
+        dispatch(setUser(null));
+        dispatch(setCart({ items: [], totalPrice: 0 }));
+        dispatch(setWishlist({ items: [] }));
         localStorage.removeItem("accessToken");
         toast.success(res.data.message);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error) { console.log(error); }
+  };
 
-    }
-  }
+  const navLinkStyles = ({ isActive }) =>
+    `px-3 py-1.5 rounded-md transition-all ${
+      isActive ? "bg-zinc-100 text-black" : "text-zinc-500 hover:text-black hover:bg-zinc-50"
+    }`;
+
+  const mobileTabStyles = ({ isActive }) => 
+    `flex flex-col items-center justify-center gap-1 flex-1 h-full transition-all ${
+      isActive ? "text-black translate-y-[-2px]" : "text-zinc-400"
+    }`;
 
   return (
-    <header className="bg-pink-50 fixed w-full z-20 border-b border-pink-200">
-      <div className="max-w-7xl mx-auto flex justify-between items-center py-3 px-4">
+    <>
+      {/* --- TOP NAVBAR: Fixed & Non-Movable --- */}
+      <header className="fixed top-0 left-0 right-0 z-[100] w-full h-16 bg-white/90 backdrop-blur-md border-b border-zinc-200">
+        <div className="max-w-7xl mx-auto h-full flex items-center justify-between px-4">
+          
+          <div className="flex items-center gap-6">
+            <Link to="/" className="flex items-center gap-2 outline-none">
+              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center shrink-0">
+                <span className="text-white font-black text-xs">S</span>
+              </div>
+              <span className="font-bold tracking-tighter text-sm truncate max-w-[120px] sm:max-w-none">
+                SANJEEEVINI SHOP
+              </span>
+            </Link>
+            
+            <div className="h-6 w-[1px] bg-zinc-200 hidden md:block" />
 
-        {/* Logo */}
-        <div>
-          <Link to="/">
-            <div className="flex items-center gap-2 mb-0">
-              <span className="text-pink-500 text-3xl font-bold">🛒KART</span>
+            <nav className="hidden md:block">
+              <ul className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-tight">
+                <li><NavLink to="/" className={navLinkStyles}>Home</NavLink></li>
+                <li><NavLink to="/products" className={navLinkStyles}>Products</NavLink></li>
+                {isAdmin && (
+                  <li>
+                    <NavLink to="/dashboard/sales" className={({ isActive }) => 
+                      `px-3 py-1.5 rounded-md ${isActive ? "bg-zinc-900 text-white" : "text-zinc-500 hover:bg-zinc-100"}`
+                    }>Admin</NavLink>
+                  </li>
+                )}
+              </ul>
+            </nav>
+          </div>
+
+          {/* Right Actions (Desktop & Mobile Profile) */}
+          <div className="flex items-center gap-2">
+            {/* Desktop Only Wishlist/Cart */}
+            <div className="hidden md:flex items-center gap-2">
+                <NavLink to="/wishlist" className={({ isActive }) => `flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${isActive ? "border-black bg-zinc-50" : "border-zinc-100"}`}>
+                <Heart size={14} />
+                <span className="text-[10px] font-bold">{wishlist?.items?.length || 0}</span>
+                </NavLink>
+
+                <NavLink to="/cart" className={({ isActive }) => `flex items-center gap-2 px-3 py-1.5 rounded-full transition-all ${isActive ? "bg-zinc-800" : "bg-black"} text-white`}>
+                <ShoppingBag size={14} />
+                <span className="text-[10px] font-bold">{cart?.items?.length || 0}</span>
+                </NavLink>
             </div>
-          </Link>
+
+            {/* Profile & Logout (Now visible on Mobile Top Right) */}
+            {user ? (
+              <div className="flex items-center gap-1 md:gap-2 ml-2">
+                <NavLink to={`/profile/${user._id}`} className={({ isActive }) => `w-8 h-8 rounded-full border-2 shrink-0 ${isActive ? "border-black" : "border-transparent"}`}>
+                  <img src={user.profilePic || "https://avatar.vercel.sh/user"} className="w-full h-full rounded-full object-cover" />
+                </NavLink>
+                <button onClick={logoutHandler} className="p-2 text-zinc-400 hover:text-red-500 transition-colors">
+                    <LogOut size={18} />
+                </button>
+              </div>
+            ) : (
+              <Link to="/login"><Button className="h-8 text-xs px-4 bg-black">Log In</Button></Link>
+            )}
+          </div>
         </div>
+      </header>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-8">
-          <ul className="flex gap-8 items-center text-gray-700 font-medium">
-            <li>
-              <Link to="/" className="hover:text-pink-600 transition-colors">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/products"
-                className="hover:text-pink-600 transition-colors"
-              >
-                Products
-              </Link>
-            </li>
-            {user && (
-              <li>
-                <Link
-                  to={`/profile/${user._id}`}
-                  className="hover:text-pink-600 transition-colors"
-                >
-                  Hello, {user.firstName}
-                </Link>
-              </li>
-            )}
-            {admin && (
-              <li>
-                <Link
-                  to={`/dashboard/sales`}
-                  className="hover:text-pink-600 transition-colors"
-                >
-                  Dashboard
-                </Link>
-              </li>
-            )}
-          </ul>
+      {/* --- MOBILE BOTTOM DOCK --- */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-[100] w-full bg-white border-t border-zinc-200">
+        <nav className="h-16 flex items-center justify-around px-2 pb-safe">
+          
+          <NavLink to="/" className={mobileTabStyles}>
+            <Home size={20} />
+            <span className="text-[10px] font-bold uppercase">Home</span>
+          </NavLink>
 
-          {/* Cart Icon */}
-          <Link to="/cart" className="relative">
-            <ShoppingCart className="w-6 h-6 text-gray-700 hover:text-pink-600 transition-colors" />
-            <span className="bg-pink-500 rounded-full absolute text-white text-xs -top-2 -right-3 px-1.5">
-              {cart?.items?.length || 0}
-            </span>
-          </Link>
+          {/* New Products Tab for Bottom Nav */}
+          <NavLink to="/products" className={mobileTabStyles}>
+            <LayoutGrid size={20} />
+            <span className="text-[10px] font-bold uppercase">Shop</span>
+          </NavLink>
 
-          <Link to="/wishlist" className="relative">
-            <Heart className="w-6 h-6 text-gray-700 hover:text-pink-600 transition-colors" />
-            <span className="bg-pink-500 rounded-full absolute text-white text-xs -top-2 -right-3 px-1.5">
-              {wishlist?.items?.length || 0}
-            </span>
-          </Link>
-          {
-            user ? <Button className="bg-pink-600 text-white cursor-pointer" onClick={logoutHandler}>Logout</Button> : <Button
-              className='.bg-gradient-to-tl from-blue-600 to-purple-600 text-white cursor-pointer'><Link to="/login">Login</Link></Button>
-          }
+          <NavLink to="/wishlist" className={mobileTabStyles}>
+            <div className="relative">
+              <Heart size={20} />
+              {wishlist?.items?.length > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-pink-600 text-white text-[9px] flex items-center justify-center rounded-full border-2 border-white font-bold animate-in zoom-in">
+                  {wishlist.items.length}
+                </span>
+              )}
+            </div>
+            <span className="text-[10px] font-bold uppercase">Wishlist</span>
+          </NavLink>
+
+          <NavLink to="/cart" className={mobileTabStyles}>
+            <div className="relative">
+              <ShoppingBag size={20} />
+              {cart?.items?.length > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-pink-600 text-white text-[9px] flex items-center justify-center rounded-full border-2 border-white font-bold animate-in zoom-in">
+                  {cart.items.length}
+                </span>
+              )}
+            </div>
+            <span className="text-[10px] font-bold uppercase">Cart</span>
+          </NavLink>
+
         </nav>
       </div>
-    </header>
+    </>
   );
 }

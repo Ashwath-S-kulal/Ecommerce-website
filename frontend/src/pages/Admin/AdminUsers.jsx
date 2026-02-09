@@ -168,7 +168,6 @@ if (loading) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
           <div className="space-y-2">
-            <span className="text-indigo-600 font-bold tracking-widest text-xs uppercase">Administration</span>
             <h2 className="text-4xl font-black text-slate-900 tracking-tight">User Directory</h2>
             <p className="text-slate-500 max-w-md">Comprehensive overview and management of all registered team members and administrative accounts.</p>
           </div>

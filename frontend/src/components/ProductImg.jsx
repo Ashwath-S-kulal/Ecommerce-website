@@ -5,7 +5,7 @@ import 'react-medium-image-zoom/dist/styles.css'
 export default function ProductImg({ images }) {
     const [mainImg, setMainImg] = useState(images[0].url);
     return (
-        <div className='flex gap-5 w-max'>
+        <div className='flex gap-5 w-fit'>
             <div className='gap-5 flex flex-col'>
                 {
                     images.map((img) => {

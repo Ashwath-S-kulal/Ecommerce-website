@@ -2,160 +2,221 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { ShoppingBag, Trash2 } from 'lucide-react';
+import { ShoppingBag, Trash2, Minus, Plus, ArrowLeft, ShieldCheck, Heart, Truck } from 'lucide-react';
 import axios from 'axios';
 import { setCart } from '@/redux/productSlice';
 import { toast } from 'sonner';
 
-
 export default function Cart() {
-
   const { cart } = useSelector(store => store.product);
-  const subTotal = cart.totalPrice
-  const shipping = subTotal > 299 ? 0 : 10;
-  const tax= subTotal * 0.05;
+  const subTotal = cart?.totalPrice || 0;
+  const shipping = subTotal > 299 || subTotal === 0 ? 0 : 10;
+  const tax = subTotal * 0.05;
   const total = subTotal + shipping + tax;
   const dispatch = useDispatch();
 
-  const API= "/api/cart";
+  const freeShippingThreshold = 500;
+  const progressToFreeShipping = Math.min((subTotal / freeShippingThreshold) * 100, 100);
+
+  const API = "/api/cart";
   const accessToken = localStorage.getItem('accessToken');
 
   const loadCart = async () => {
     try {
       const res = await axios.get(`${API}/get`, {
-        headers:{
-          Authorization : `Bearer ${accessToken}`
-        }
-      })
-      if(res.data.success){
-        dispatch(setCart(res.data.cart))
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      if (res.data.success) {
+        dispatch(setCart(res.data.cart));
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const handleUpdateQuantity = async (productId, type) => {
     try {
-      const res = await axios.put(`${API}/update`,{ productId, type }, {
-        headers:{
-          Authorization : `Bearer ${accessToken}`
-        }
-      })
-      if(res.data.success){
-        dispatch(setCart(res.data.cart))
+      const res = await axios.put(`${API}/update`, { productId, type }, {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      if (res.data.success) {
+        dispatch(setCart(res.data.cart));
       }
     } catch (error) {
       console.error("Error updating quantity:", error);
     }
-  }
+  };
 
   const handleRemove = async (productId) => {
     try {
       const res = await axios.delete(`${API}/remove`, {
-        headers:{
-          Authorization : `Bearer ${accessToken}`,
-        },
-        data: {productId}
-      })
-      if(res.data.success){
-        dispatch(setCart(res.data.cart))
-        toast.success("Product removed from cart")
+        headers: { Authorization: `Bearer ${accessToken}` },
+        data: { productId }
+      });
+      if (res.data.success) {
+        dispatch(setCart(res.data.cart));
+        toast.success("Item removed");
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     loadCart();
-  },[dispatch])
+  }, [dispatch]);
 
   return (
-    <div className='pt-20 bg-gray-50 min-h-screen px-4'>
-      {
-        cart?.items?.length > 0 ? 
-        <div className='max-w-7xl mx-auto'>
-          <h1 className='text-3xl font-bold mb-6'>Your Cart</h1>
-          <div className='max-w-7xl mx-auto flex gap-7'>
-            <div className='flex flex-col gap-5 flex-1'>
-              {cart?.items.map((product, index) => {
-                return <Card key={index}>
-                  <div className='flex justify-between items-center pr-7'>
-                    <div className='flex items-center w-[350px]'>
-                      <img src={product.productId?.productImg?.[0]?.url } alt='img' className='w-24 h-24 object-cover rounded-lg' />
-                      <div className='w-[280px]'>
-                        <h1 className='font-semibold truncate'>{product.productId.productName}</h1>
-                        <h2 className='font-bold text-pink-600'>₹{product.productId.productPrice}</h2>
+    <div className='pt-20 pb-10 bg-[#f8f9fa] min-h-screen px-3 lg:px-6'>
+      {cart?.items?.length > 0 ? (
+        <div className='max-w-screen mx-auto'>
+          {/* --- COMPACT HEADER --- */}
+          <div className="flex items-end justify-between mb-5 border-b pb-4 border-gray-200">
+            <div>
+              <h1 className='text-2xl font-black text-gray-900 tracking-tighter'>Cart</h1>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">{cart.items.length} Units</p>
+            </div>
+            <Link to="/products" className="flex items-center text-[11px] font-bold uppercase tracking-widest text-pink-600 hover:opacity-70 transition-opacity">
+              <ArrowLeft className="mr-1 h-3 w-3" />
+              Add More
+            </Link>
+          </div>
+
+          <div className='grid grid-cols-1 lg:grid-cols-12 gap-6'>
+            {/* --- LEFT: COMPACT ITEMS --- */}
+            <div className='lg:col-span-8 space-y-3'>
+              {/* Shipping Incentive */}
+              <div className="bg-white p-3 rounded-xl border border-pink-100 flex flex-col gap-2">
+                <div className="flex justify-between items-center text-[10px] font-bold uppercase">
+                  <span className="flex items-center gap-1 text-pink-600"><Truck size={14}/> {subTotal >= freeShippingThreshold ? "Free Shipping Unlocked!" : "Shipping Progress"}</span>
+                  <span className="text-gray-400">Target: ₹{freeShippingThreshold}</span>
+                </div>
+                <div className="w-full bg-gray-100 h-1 rounded-full overflow-hidden">
+                   <div className="bg-pink-500 h-full transition-all duration-500" style={{ width: `${progressToFreeShipping}%` }} />
+                </div>
+              </div>
+
+              {cart?.items.map((product, index) => (
+                <Card key={index} className="overflow-hidden border border-gray-100 shadow-sm bg-white rounded-2xl">
+                  <div className='flex p-3 gap-4 items-center'>
+                    <img 
+                      src={product.productId?.productImg?.[0]?.url} 
+                      alt='img' 
+                      className='w-20 h-24 object-cover rounded-lg bg-gray-50' 
+                    />
+                    
+                    <div className='flex-1 min-w-0'>
+                      <div className="flex justify-between items-start">
+                        <h2 className='font-bold text-sm text-gray-800 truncate max-w-[600px]'>
+                          {product.productId.productName}
+                        </h2>
+                        <div >
+                           <button onClick={() => handleRemove(product.productId._id)} className="text-red-400 hover:text-red-600 font-semibold transition-colors flex gap-1 items-center">
+                          <Trash2 size={16} /><span className='text-sm'>Remove</span> 
+                        </button>
+                        </div>
+                       
+                      </div>
+                      <p className='text-[11px] font-medium text-gray-400'>{product.productId.category}</p>
+                      
+                      <div className='flex items-center justify-between mt-3'>
+                        <div className="flex items-center border border-gray-100 rounded-md bg-gray-50/50 scale-90 -ml-2">
+                          <button 
+                            onClick={() => handleUpdateQuantity(product.productId._id, 'decrease')}
+                            className="p-1.5 hover:text-pink-600 disabled:opacity-30"
+                            disabled={product.quantity <= 1}
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span className='w-8 text-center text-xs font-bold text-gray-700'>{product.quantity}</span>
+                          <button 
+                            onClick={() => handleUpdateQuantity(product.productId._id, 'increase')}
+                            className="p-1.5 hover:text-pink-600"
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
+                        <p className='text-sm font-black text-gray-900'>
+                          ₹{(product.productId.productPrice * product.quantity).toLocaleString('en-IN')}
+                        </p>
                       </div>
                     </div>
-                    <div className='flex gap-5 items-center'>
-                      <Button variant="outline" onClick={()=>handleUpdateQuantity(product.productId._id, 'decrease')}>-</Button>
-                      <span>{product.quantity}</span>
-                      <Button variant="outline" onClick={()=>handleUpdateQuantity(product.productId._id, 'increase')}>+</Button>
-                    </div>
-                    <p>₹{(product.productId.productPrice)*(product.quantity)}</p>
-                    <p onClick={()=>handleRemove(product.productId._id)} className='flex text-red-500 items-center gap-1 cursor-pointer'><Trash2></Trash2> Remove</p>
                   </div>
                 </Card>
-              })}
+              ))}
             </div>
-            <div> 
-              <Card className="w-[400px]">
-                <CardHeader>
-                  <CardTitle>Order Summary</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className='flex justify-between mb-2'>
-                    <span>Subtotal ({cart.items.length} items) </span>
-                    <span>₹{cart.totalPrice.toLocaleString('en-IN')}</span>
-                  </div>
-                  <div className='flex justify-between mb-2'> 
-                    <span>Shipping</span>
-                    <span>₹{shipping}</span>
-                  </div>
-                  <div className='flex justify-between mb-2'> 
-                    <span>Tax (5%)</span>
-                    <span>₹{tax}</span>
-                  </div>
-                  <Separator />
-                  <div className='flex justify-between font-bold text-lg'>
-                    <span>Total</span>
-                    <span>₹{total.toLocaleString('en-IN')}</span>
-                  </div>
-                  <div className='space-y-3 pt-4'>
-                    <div className='flex space-x-2'>
-                      <Input placeholder="promo code"></Input>
-                      <Button variant="outline">Apply</Button>
+
+            {/* --- RIGHT: COMPACT SUMMARY --- */}
+            <div className='lg:col-span-4'> 
+              <Card className="border-none shadow-lg bg-white rounded-3xl overflow-hidden sticky top-24">
+                <CardContent className="p-5 space-y-4">
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">Order Summary</h3>
+                  
+                  <div className="space-y-2.5">
+                    <div className='flex justify-between text-[13px] text-gray-500'>
+                      <span>Subtotal</span>
+                      <span className="font-bold text-gray-900">₹{subTotal.toLocaleString('en-IN')}</span>
                     </div>
-                    <Button className='w-full bg-pink-600 text-white'>PLACE ORDER</Button>
-                    <Button variant='outline' className="w-full bg-transparent">
-                      <Link to="/products">Continue Shopping</Link>
-                    </Button>
+                    <div className='flex justify-between text-[13px] text-gray-500'> 
+                      <span>Shipping</span>
+                      <span className={`font-bold ${shipping === 0 ? "text-green-600" : "text-gray-900"}`}>
+                        {shipping === 0 ? "FREE" : `₹${shipping}`}
+                      </span>
+                    </div>
+                    <div className='flex justify-between text-[13px] text-gray-500'> 
+                      <span>Estimated Tax</span>
+                      <span className="font-bold text-gray-900">₹{tax.toFixed(0)}</span>
+                    </div>
+                  </div>
+                  
+                  <Separator className="bg-gray-50" />
+                  
+                  <div className='flex justify-between items-center py-1'>
+                    <span className='text-sm font-black uppercase tracking-widest'>Total</span>
+                    <span className='text-xl font-black text-pink-600'>₹{Math.round(total).toLocaleString('en-IN')}</span>
                   </div>
 
-                  
+                  <div className='pt-2 space-y-3'>
+                    <div className='flex gap-1'>
+                      <Input 
+                        placeholder="COUPON" 
+                        className="h-9 text-[10px] font-bold bg-gray-50 border-gray-100 rounded-lg placeholder:text-gray-300"
+                      />
+                      <Button variant="secondary" className="h-9 px-3 text-[10px] font-black uppercase rounded-lg">Apply</Button>
+                    </div>
+                    
+                    <Button className='w-full h-12 text-xs font-black tracking-[0.1em] bg-gray-900 hover:bg-pink-600 rounded-xl transition-all shadow-md active:scale-95'>
+                      PROCEED TO CHECKOUT
+                    </Button>
+                    
+                    <div className="flex items-center justify-center gap-2 text-[9px] text-gray-300 font-bold tracking-tighter">
+                      <ShieldCheck size={12} className="text-gray-200" />
+                      128-BIT ENCRYPTED SECURE CHECKOUT
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
           </div>
-        </div> : <div className='flex flex-col items-center justify-center gap-6 mt-20'>
-          <div className='bg-gray-100 p-10 rounded-full'>
-            <ShoppingBag size={80} className='text-gray-300' />
+        </div>
+      ) : (
+        /* --- MINIMAL EMPTY STATE --- */
+        <div className='flex flex-col items-center justify-center min-h-[70vh] text-center'>
+          <div className='mb-6 bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-50'>
+            <ShoppingBag size={40} className='text-gray-200' strokeWidth={1} />
           </div>
-          <div className='text-center'>
-            <h2 className='text-2xl font-bold text-gray-800'>Your cart is empty</h2>
-            <p className='text-gray-500 mt-2'>Looks like you haven't added anything to your cart yet.</p>
-          </div>
-          <Button asChild className="bg-pink-600 hover:bg-pink-700 px-8">
-            <Link to="/products">Shop Now</Link>
+          <h2 className='text-xl font-black text-gray-900 tracking-tight'>Empty Cart</h2>
+          <p className='text-[12px] text-gray-400 mt-2 mb-6 max-w-[200px] font-medium'>
+            Your boutique tray is waiting for items.
+          </p>
+          <Button asChild className="bg-pink-600 hover:bg-black text-[11px] font-black uppercase tracking-widest rounded-full px-8 h-11">
+            <Link to="/products">Browse Collection</Link>
           </Button>
         </div>
-    }
+      )}
     </div>
-
-  )
+  );
 }
