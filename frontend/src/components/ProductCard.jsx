@@ -1,4 +1,4 @@
-import { ShoppingCart, Heart, X } from 'lucide-react' 
+import { ShoppingCart, Heart } from 'lucide-react'
 import React from 'react'
 import { Button } from './ui/button'
 import { Skeleton } from "@/components/ui/skeleton"
@@ -8,17 +8,14 @@ import axios from 'axios'
 import { setCart, setWishlist } from '@/redux/productSlice'
 import { useNavigate } from 'react-router-dom'
 
-export default function ProductCard  ({ product, loading }) {
+export default function ProductCard({ product, loading }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const accessToken = localStorage.getItem('accessToken');
     const { wishlist } = useSelector(store => store.product);
 
-    const productImg = product?.productImg;
-    const productPrice = product?.productPrice;
-    const productName = product?.productName;
+    const isInWishlist = wishlist?.items?.some(item => item.productId?._id === product?._id);
 
-    // Logic remains same
     const addtoCart = async (productId) => {
         if (!accessToken) return toast.error("Please login first");
         try {
@@ -32,10 +29,11 @@ export default function ProductCard  ({ product, loading }) {
         } catch (error) { console.error(error); }
     };
 
-    const toggleWishlist = async () => {
+    const toggleWishlist = async (e) => {
+        e.stopPropagation(); // Prevent navigation when clicking heart
         if (!accessToken) return toast.error("Please login first");
         const endpoint = isInWishlist ? '/api/wishlist/remove' : '/api/wishlist/add';
-        const method = isInWishlist ? 'delete' : 'post';        
+        const method = isInWishlist ? 'delete' : 'post';
         try {
             const res = await axios({
                 method,
@@ -50,80 +48,62 @@ export default function ProductCard  ({ product, loading }) {
         } catch (error) { console.error(error); }
     };
 
-    const isInWishlist = wishlist?.items?.some(item => item.productId?._id === product?._id);
+    if (loading || !product) return <CardSkeleton />;
 
     return (
-        <div className='bg-white border border-gray-200  shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[32px] p-4 transition-all shadow-md hover:shadow-xl w-full max-w-[300px]'>
-            {/* Image Container */}
-            <div className='bg-[#F8F9FA] rounded-[24px] border aspect-square relative flex items-center justify-center overflow-hidden group'>
-                {loading || !product ? (
-                        <WishlistSkeleton/>
-                ) : (
-                    <>
-                        <img
-                            src={productImg?.[0]?.url}
-                            alt={productName}
-                            onClick={() => navigate(`/products/${product._id}`)}
-                            className='w-4/5 h-4/5 object-contain transition-transform duration-500 group-hover:scale-110 cursor-pointer'
-                        />
-
-                        {/* Top Action Button (Wishlist or Close) */}
-                        <button
-                            onClick={toggleWishlist}
-                            className="absolute top-3 right-3 p-1.5 bg-white rounded-full shadow-sm hover:bg-gray-50 transition-colors"
-                        >
-                            {isInWishlist ? (
-                                <Heart size={16} className="text-pink-600 fill-pink-600" />
-                            ) : (
-                                <Heart size={16} className="text-gray-400" /> 
-                            )}
-                        </button>
-                    </>
-                )}
+        <div className='group bg-white border border-gray-100 shadow-sm hover:shadow-xl rounded-md md:rounded-xl p-3 md:p-4 transition-all duration-300 w-full flex flex-col h-full'>
+            <div className='bg-[#F8F9FA] rounded-md md:rounded-xl border border-gray-50 aspect-square relative flex items-center justify-center overflow-hidden shrink-0'>
+                <img
+                    src={product?.productImg?.[0]?.url}
+                    alt={product?.productName}
+                    onClick={() => navigate(`/products/${product._id}`)}
+                    className='w-3/4 h-3/4 object-contain transition-transform duration-500 group-hover:scale-110 cursor-pointer'
+                />
+                <button
+                    onClick={toggleWishlist}
+                    className="absolute top-2 right-2 md:top-3 md:right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-all active:scale-90"
+                >
+                    <Heart 
+                        size={18} 
+                        className={isInWishlist ? "text-pink-600 fill-pink-600" : "text-gray-400"} 
+                    />
+                </button>
             </div>
 
-            {/* Content Section */}
-            <div className='mt-5 px-1 space-y-2'>
-                {loading || !product ? (
-                    <div className='space-y-2'>
-                        <WishlistSkeleton/>
-                    </div>
-                ) : (
-                    <>
-                        <h1 className='text-[#0F172A] font-bold text-[15px] line-clamp-1 tracking-tight uppercase'>
-                            {productName}
-                        </h1>
-                        <h2 className='text-[#0F172A] font-extrabold text-xl'>
-                            ₹{productPrice?.toLocaleString('en-IN')}
-                        </h2>
-                        
-                        <Button
-                            className='w-full bg-[#0F172A] hover:bg-[#1e293b] text-white rounded-2xl h-10 mt-4 flex items-center justify-center gap-2 font-bold transition-all active:scale-95'
-                            onClick={() => addtoCart(product._id)}
-                        >
-                            <ShoppingCart size={16} />
-                            Add to cart
-                        </Button>
-                    </>
-                )}
+            <div className='mt-4 px-1 flex flex-col flex-grow'>
+                <h1 className='text-[#0F172A] font-bold text-sm md:text-[15px] line-clamp-1 tracking-tight uppercase'>
+                    {product?.productName}
+                </h1>
+                <h2 className='text-[#0F172A] font-extrabold text-lg md:text-xl mt-1'>
+                    ₹{product?.productPrice?.toLocaleString('en-IN')}
+                </h2>
+                
+                <div className="mt-auto">
+                    <Button
+                        className='w-full bg-[#0F172A] hover:bg-[#1e293b] text-white rounded-xl md:rounded-xl h-9 md:h-11 mt-4 flex items-center justify-center gap-2 font-bold transition-all active:scale-95 text-xs md:text-sm'
+                        onClick={() => addtoCart(product._id)}
+                    >
+                        <ShoppingCart size={16} />
+                        <span className="hidden xs:inline">Add</span>
+                        <span className="xs:hidden">Add to cart</span>
+                    </Button>
+                </div>
             </div>
         </div>
     );
 };
 
+const CardSkeleton = () => (
+    <div className='bg-white border border-gray-100 rounded-[32px] p-4 w-full animate-pulse'>
+        <Skeleton className="aspect-square w-full rounded-[24px] mb-4" />
+        <Skeleton className="h-4 w-2/3 mb-2" />
+        <Skeleton className="h-6 w-1/2 mb-4" />
+        <Skeleton className="h-10 w-full rounded-2xl" />
+    </div>
+);
 
-
-const WishlistSkeleton = () => (
-    <div className="max-w-[1440px] mx-auto pt-24 px-4 md:px-10">
-        <Skeleton className="h-10 w-48 mb-12 rounded-full" />
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
-            {[...Array(6)].map((_, i) => (
-                <div key={i} className="space-y-4 p-2 bg-white rounded-[24px]">
-                    <Skeleton className="aspect-[1/1.2] w-full rounded-[18px]" />
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-10 w-full rounded-[14px]" />
-                </div>
-            ))}
-        </div>
+export const ProductGridSkeleton = () => (
+    <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        {[...Array(8)].map((_, i) => <CardSkeleton key={i} />)}
     </div>
 );

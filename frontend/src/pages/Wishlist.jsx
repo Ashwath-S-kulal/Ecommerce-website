@@ -73,9 +73,7 @@ export default function Wishlist() {
     return (
         <div className="min-h-screen bg-[#F9FAFB] pt-24 pb-20 px-4 md:px-10">
             <div className="max-w-[1440px] mx-auto">
-                
-                {/* Clean Section Header */}
-                <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-4 border-b border-gray-100 pb-8">
+                                <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-4 border-b border-gray-100 pb-8">
                     <div className="text-center md:text-left">
                         <h1 className="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3 justify-center md:justify-start">
                             My Wishlist <span className="bg-rose-100 text-rose-600 text-xs px-3 py-1 rounded-full font-bold">{wishlist?.items?.length || 0}</span>
@@ -90,17 +88,14 @@ export default function Wishlist() {
                 {wishlist?.items?.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-10">
                         {wishlist.items.map((item) => (
-                            <div key={item.productId?._id} className="group relative flex flex-col bg-white p-2 rounded-[24px] shadow-sm hover:shadow-xl transition-all duration-300">
-                                
-                                {/* Image Wrapper */}
-                                <div className="relative aspect-[1/1.2] overflow-hidden rounded-[18px] mb-4 bg-gray-50">
-                                    {/* Remove Button - We use e.stopPropagation to prevent triggering the image click */}
+                            <div key={item.productId?._id} className="group relative flex flex-col bg-white p-2 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300">
+                                                                <div className="relative aspect-[1/1.2] overflow-hidden rounded-xl mb-4 bg-gray-50">
                                     <button 
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleRemove(item.productId?._id);
                                         }}
-                                        className="absolute top-2 right-2 z-10 p-1.5 bg-white/70 hover:bg-rose-500 hover:text-white text-gray-600 backdrop-blur-md rounded-full transition-all duration-200"
+                                        className="absolute top-2 right-2 z-10 p-2 bg-white/70 hover:bg-rose-500 hover:text-white text-gray-600 backdrop-blur-md rounded-full transition-all duration-200"
                                     >
                                         <X size={14} />
                                     </button>
@@ -109,11 +104,9 @@ export default function Wishlist() {
                                         src={item.productId?.productImg?.[0]?.url}
                                         alt={item.productId?.productName}
                                         onClick={() => navigate(`/products/${item.productId?._id}`)}
-                                        className="w-full h-full p-6 object-cover transition-transform duration-700 group-hover:scale-110 cursor-pointer"
+                                        className="w-full h-full p-6 object-cover transition-transform rounded-xl duration-700 group-hover:scale-110 cursor-pointer"
                                     />
                                 </div>
-
-                                {/* Content Area */}
                                 <div className="px-2 pb-2 flex flex-col flex-grow">
                                     <h3 
                                         onClick={() => navigate(`/products/${item.productId?._id}`)}
@@ -124,8 +117,6 @@ export default function Wishlist() {
                                     <p className="text-sm font-black text-gray-900 mb-4">
                                         ₹{item.productId?.productPrice?.toLocaleString()}
                                     </p>
-
-                                    {/* Add to Cart Button */}
                                     <button 
                                         onClick={() => handleMoveToCart(item.productId?._id)}
                                         className="mt-auto flex items-center justify-center gap-2 w-full bg-gray-900 hover:bg-rose-600 text-white py-2.5 rounded-[14px] text-[11px] font-bold uppercase tracking-widest transition-all active:scale-95 shadow-md hover:shadow-rose-200"

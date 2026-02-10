@@ -30,24 +30,17 @@ export default function SingleProducts() {
                 <div className="mb-8 opacity-60 hover:opacity-100 transition-opacity">
                     <BreadCrumps product={product} />
                 </div>
-
-                {/* Main Content: Asymmetrical Grid */}
                 <div className='grid grid-cols-1 lg:grid-cols-12 gap-16'>
-                    
-                    {/* Left: Image Section (Spans 7 columns) */}
-                    <div className='lg:col-span-5'>
+                                        <div className='lg:col-span-5'>
                         <div className="sticky top-28">
                             <ProductImg images={product.productImg} product={product} />
                         </div>
                     </div>
 
-                    {/* Right: Info Section (Spans 5 columns) */}
                     <div className='lg:col-span-7 flex flex-col gap-10'>
                         <section className="">
                             <ProductDesc product={product} />
                         </section>
-
-                        {/* Bento-style Info Cards */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="bg-amber-50 p-6 rounded-[32px] flex flex-col justify-between aspect-square lg:aspect-auto">
                                 <Truck size={24} className="text-pink-400" />
@@ -67,14 +60,12 @@ export default function SingleProducts() {
                     </div>
                 </div>
 
-                {/* Bottom Section: Aesthetic Separation */}
                 <div className=" border-t border-slate-100 pt-20">
                     <div className="flex flex-col items-center mb-12 text-center">
                         <h2 className="text-4xl font-black text-slate-900 tracking-tighter">You Might Also <span className="font-serif italic text-pink-500">Adore</span></h2>
                     </div>
                     
-                    {/* Placeholder for Related Products */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-8">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-5 md:gap-8">
                         {products.filter(p => p._id !== productId).slice(0, 12).map(p => (
                             <ProductCard key={p._id} product={p} />
                         ))}
