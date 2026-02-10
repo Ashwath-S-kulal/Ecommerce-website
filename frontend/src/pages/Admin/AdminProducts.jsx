@@ -104,7 +104,7 @@ export default function AdminProduct() {
     })
 
   return (
-    <div className='p-8 flex flex-col gap-6 min-h-screen bg-[#f9fafb] pt-12 selection:bg-pink-100'>
+    <div className='p-3 md:p-8 flex flex-col gap-6 min-h-screen bg-[#f9fafb] pt-12 selection:bg-pink-100'>
             <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
         <div>
           <h1 className='text-3xl font-black text-slate-900 tracking-tighter flex items-center gap-2'>

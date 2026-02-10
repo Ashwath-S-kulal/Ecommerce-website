@@ -2,17 +2,31 @@ import ProductCard from '@/components/ProductCard'
 import ProductDesc from '@/components/ProductDesc'
 import ProductImg from '@/components/ProductImg'
 import BreadCrumps from '@/components/ui/BreadCrumps'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import { Truck, ShieldCheck, RefreshCw } from 'lucide-react'
+import { Truck, ShieldCheck } from 'lucide-react'
 
 export default function SingleProducts() {
     const { id: productId } = useParams()
     const { products } = useSelector((store) => store.product)
     const product = products.find((item) => item._id === productId)
 
-    // Smooth scroll to top on product change
+    const similarProducts = useMemo(() => {
+        if (!product) return []
+        return products
+            .filter((p) => p.category === product.category && p._id !== productId)
+            .slice(0, 24) 
+    }, [products, product, productId])
+
+    const suggestedProducts = useMemo(() => {
+        if (!product) return []
+        return products
+            .filter((p) => p.category !== product.category && p._id !== productId)
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 12) 
+    }, [products, product, productId])
+
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [productId])
@@ -30,15 +44,16 @@ export default function SingleProducts() {
                 <div className="mb-8 opacity-60 hover:opacity-100 transition-opacity">
                     <BreadCrumps product={product} />
                 </div>
+
                 <div className='grid grid-cols-1 lg:grid-cols-12 gap-16'>
-                                        <div className='lg:col-span-5'>
+                    <div className='lg:col-span-5'>
                         <div className="sticky top-28">
                             <ProductImg images={product.productImg} product={product} />
                         </div>
                     </div>
 
                     <div className='lg:col-span-7 flex flex-col gap-10'>
-                        <section className="">
+                        <section>
                             <ProductDesc product={product} />
                         </section>
                         <div className="grid grid-cols-2 gap-4">
@@ -60,17 +75,34 @@ export default function SingleProducts() {
                     </div>
                 </div>
 
-                <div className=" border-t border-slate-100 pt-20">
-                    <div className="flex flex-col items-center mb-12 text-center">
-                        <h2 className="text-4xl font-black text-slate-900 tracking-tighter">You Might Also <span className="font-serif italic text-pink-500">Adore</span></h2>
+                {similarProducts.length > 0 && (
+                    <div className="mt-20 border-t border-slate-100 pt-5">
+                        <div className="mb-12">
+                            <h2 className="text-3xl font-black text-slate-900 tracking-tighter">
+                                Similar <span className="font-serif italic text-pink-500">{product.category}</span>
+                            </h2>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-8">
+                            {similarProducts.map(p => (
+                                <ProductCard key={p._id} product={p} />
+                            ))}
+                        </div>
                     </div>
-                    
-                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-5 md:gap-8">
-                        {products.filter(p => p._id !== productId).slice(0, 12).map(p => (
+                )}
+
+                <div className="mt-15  border-t border-slate-100 pt-5">
+                    <div className="mb-12">
+                        <h2 className="text-3xl font-black text-slate-900 tracking-tighter">
+                            Wait! You Might Also <span className="font-serif italic text-pink-500">Love These</span>
+                        </h2>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-8">
+                        {suggestedProducts.map(p => (
                             <ProductCard key={p._id} product={p} />
                         ))}
                     </div>
                 </div>
+
             </div>
         </div>
     )

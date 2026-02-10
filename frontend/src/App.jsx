@@ -16,6 +16,10 @@ import SingleProducts from "./pages/SingleProducts";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import Dashboard from "./pages/Dashboard";
+import AddressForm from "./pages/AddressForm"
+import OrderDetails from "./components/orderDetails"
+import ScrollToTop from "./components/ScrollToTop";
+import OrderSuccess from "./components/OrderSuccess";
 
 // Admin pages
 import AdminSales from "./pages/admin/AdminSales";
@@ -24,8 +28,7 @@ import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import ShowUserOrders from "./pages/Admin/ShowUserOrders";
 import AdminUsers from "./pages/Admin/AdminUsers";
-import UserInfo from "./pages/Admin/UserInfo";
-import ScrollToTop from "./components/ScrollToTop";
+import AdminOrderDetails from "./pages/Admin/AdminOrderDetails"
 
 export default function App() {
   return (
@@ -33,8 +36,8 @@ export default function App() {
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<><Navbar /><Home /> <Footer /> </>} />
-        <Route path="/signup" element={<><Navbar/><SignUp /></>} />
-        <Route path="/login" element={<><Navbar/><Login /></>} />
+        <Route path="/signup" element={<><Navbar /><SignUp /></>} />
+        <Route path="/login" element={<><Navbar /><Login /></>} />
         <Route path="/verify" element={<Verify />} />
         <Route path="/verify/:token" element={<VerifyEmail />} />
         <Route path="/profile/:userId" element={<ProtectedRoute> <Navbar /><Profile /> </ProtectedRoute>} />
@@ -42,6 +45,10 @@ export default function App() {
         <Route path="/products/:id" element={<><Navbar /><SingleProducts /></>} />
         <Route path="/cart" element={<ProtectedRoute><Navbar /><Cart /></ProtectedRoute>} />
         <Route path="/wishlist" element={<ProtectedRoute><Navbar /><Wishlist /></ProtectedRoute>} />
+        <Route path="/address" element={<ProtectedRoute><Navbar/><AddressForm /></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute><Navbar/><OrderDetails /></ProtectedRoute>} />
+        <Route path="/ordersuccess/:id" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
+
 
         {/* Admin Dashboard */}
         <Route path="/dashboard" element={<ProtectedRoute adminOnly={true}><Navbar /><Dashboard /></ProtectedRoute>}>
@@ -51,8 +58,8 @@ export default function App() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="users/orders/:userId" element={<ShowUserOrders />} />
           <Route path="users" element={<AdminUsers />} />
-          <Route path="users/:id" element={<UserInfo />} />
-        </Route>
+<Route path="order-details/:orderId" element={<AdminOrderDetails />} />  
+      </Route>
       </Routes>
     </BrowserRouter>
   );

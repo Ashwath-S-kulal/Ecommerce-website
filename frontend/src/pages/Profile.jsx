@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { NavLink, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import axios from 'axios'
 import { setUser } from '@/redux/userSlice'
 import { Loader, Camera, User, Package, MapPin, Phone, Mail, Save, ImagePlus } from 'lucide-react'
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import ShowUserOrders from '../components/orderDetails'
 
 export default function Profile() {
     const { user } = useSelector(store => store.user);
@@ -28,6 +29,7 @@ export default function Profile() {
     });
     const [file, setFile] = useState(null)
     const dispatch = useDispatch();
+    const isAdmin = user?.role === "admin";
 
     const handleChange = (e) => {
         setUpdateUser({ ...updateUser, [e.target.name]: e.target.value })
@@ -83,17 +85,42 @@ export default function Profile() {
                     </div>
 
                     <div className="flex-1 text-center md:text-left">
-                        <h1 className="text-3xl font-black tracking-tight text-slate-900">{updateUser.firstName || 'User'}'s Profile</h1>
-                        <p className="text-slate-500 font-medium">Personalize your profile and preferences</p>
+                        {/* Typography & Heading */}
+                        <div className="space-y-1">
+                            <h1 className="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
+                                {updateUser.firstName || 'User'}'s <span className="text-pink-500 italic font-serif">Profile</span>
+                            </h1>
+                            <p className="text-slate-500 font-medium text-sm sm:text-base">
+                                Personalize your boutique experience and preferences
+                            </p>
+                        </div>
 
-                        <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-3">
-                            <Label htmlFor="profilePic" className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors">
-                                <ImagePlus size={14} /> Change Photo
+                        <div className="mt-6 flex flex-wrap justify-center md:justify-start items-center gap-3">
+
+                            <Label
+                                htmlFor="profilePic"
+                                className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-2xl text-xs font-bold hover:bg-pink-600 hover:shadow-lg hover:shadow-pink-100 transition-all active:scale-95"
+                            >
+                                <ImagePlus size={16} />
+                                <span>Change Photo</span>
                             </Label>
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                {updateUser.role || 'Member'} Account
+
+                            <div className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-2xl text-xs font-bold text-slate-600 shadow-sm">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
+                                <span className="uppercase tracking-wider">{updateUser.role || 'Member'} Account</span>
                             </div>
+
+                            {isAdmin && (
+                                <NavLink
+                                    to="/dashboard/sales"
+                                    className="inline-flex items-center px-4 py-2.5 rounded-2xl text-xs font-bold text-pink-600 bg-pink-50 border border-pink-100 hover:bg-pink-100 transition-colors"
+                                >
+                                    Admin Panel
+                                </NavLink>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -164,19 +191,7 @@ export default function Profile() {
                                 </div>
                             </div>
                         </form>
-                    </TabsContent>
-
-                    <TabsContent value="orders">
-                        <div className="bg-white border border-slate-200/60 rounded-[32px] p-16 flex flex-col items-center text-center">
-                            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
-                                <Package size={40} className="text-slate-200" />
-                            </div>
-                            <h2 className="text-xl font-bold">No History</h2>
-                            <p className="text-slate-500 mt-1 max-w-[240px]">You haven't placed any orders with this account yet.</p>
-                        </div>
-                    </TabsContent>
-                </Tabs>
-                <div className="mt-10 rounded-2xl  bg-white/80 backdrop-blur-lg border-t border-slate-200 p-4 z-50 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
+                          <div className="mt-10 rounded-2xl  bg-white/80 backdrop-blur-lg border-t border-slate-200 p-4 z-50 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
                     <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
                         <div className="hidden sm:block">
                             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Unsaved Changes</p>
@@ -201,6 +216,13 @@ export default function Profile() {
                         </div>
                     </div>
                 </div>
+                    </TabsContent>
+
+                    <TabsContent value="orders">
+                       <ShowUserOrders/>
+                    </TabsContent>
+                </Tabs>
+              
             </div>
 
         </div>
