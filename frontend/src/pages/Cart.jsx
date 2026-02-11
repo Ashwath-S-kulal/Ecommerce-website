@@ -13,12 +13,12 @@ import { toast } from 'sonner';
 export default function Cart() {
   const { cart } = useSelector(store => store.product);
   const subTotal = cart?.totalPrice || 0;
-  const shipping = subTotal > 299 || subTotal === 0 ? 0 : 10;
-  const tax = subTotal * 0.05;
+  const shipping = subTotal > 5000 || subTotal === 0 ? 0 : 50;
+  const tax = subTotal * 0.00;
   const total = subTotal + shipping + tax;
   const dispatch = useDispatch();
 
-  const freeShippingThreshold = 500;
+  const freeShippingThreshold = 5000;
   const progressToFreeShipping = Math.min((subTotal / freeShippingThreshold) * 100, 100);
 
   const API = "/api/cart";
@@ -176,19 +176,11 @@ export default function Cart() {
                   </div>
 
                   <div className='pt-2 space-y-3'>
-                    <div className='flex gap-1'>
-                      <Input
-                        placeholder="COUPON"
-                        className="h-9 text-[10px] font-bold bg-gray-50 border-gray-100 rounded-lg placeholder:text-gray-300"
-                      />
-                      <Button variant="secondary" className="h-9 px-3 text-[10px] font-black uppercase rounded-lg">Apply</Button>
-                    </div>
-
                     <Button
                       asChild // Use asChild to let Link handle the navigation
                       className='w-full h-12 text-xs font-black tracking-[0.1em] bg-gray-900 hover:bg-pink-600 rounded-xl transition-all shadow-md active:scale-95'
                     >
-                      <Link to="/address">PROCEED TO CHECKOUT</Link>
+                      <Link to="/address">PLACE ORDER</Link>
                     </Button>
 
                     <div className="flex items-center justify-center gap-2 text-[9px] text-gray-300 font-bold tracking-tighter">

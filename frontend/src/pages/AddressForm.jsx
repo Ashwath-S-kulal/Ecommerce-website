@@ -43,8 +43,8 @@ export default function AddressForm() {
   };
 
   const subtotal = cart.totalPrice;
-  const shipping = subtotal > 50 ? 0 : 10;
-  const tax = Number((subtotal * 0.05).toFixed(2));
+  const shipping = subtotal > 5000 ? 0 : 50;
+  const tax = Number((subtotal * 0.00).toFixed(2));
   const total = subtotal + shipping + tax;
 
   const handleCheckoutTrigger = () => {
@@ -117,6 +117,10 @@ export default function AddressForm() {
                   <div className="grid grid-cols-2 gap-4">
                     <Input name="city" placeholder="City" onChange={handleChange} className="rounded-xl" />
                     <Input name="state" placeholder="State" onChange={handleChange} className="rounded-xl" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <Input name="zip" placeholder="Zip Code" onChange={handleChange} className="rounded-xl" />
+                    <Input name="country" placeholder="Country" onChange={handleChange} className="rounded-xl" />
                   </div>
                   <div className="flex gap-4 pt-4">
                     <Button onClick={handleSave} className="flex-1 bg-slate-900 rounded-2xl h-12 font-bold">Save Address</Button>

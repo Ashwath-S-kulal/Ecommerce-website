@@ -1,4 +1,3 @@
-// controllers/orderController.js
 import { Order } from "../models/orderModel.js";
 import { Product } from "../models/productModel.js";
 
@@ -57,8 +56,8 @@ export const createOrder = async (req, res) => {
       subtotal += product.productPrice * item.quantity;
     }
 
-    const shipping = subtotal > 50 ? 0 : 10;
-    const tax = Number((subtotal * 0.05).toFixed(2));
+    const shipping = subtotal > 5000 ? 0 : 50;
+    const tax = Number((subtotal * 0.00).toFixed(2));
     const totalAmount = subtotal + shipping + tax;
 
     const order = await Order.create({
@@ -168,22 +167,58 @@ export const getOrderById = async (req, res) => {
     }
 };
 
-export const updateOrderStatus = async (req, res) => {
+export const updateOrderStatusAdmin = async (req, res) => {
     try {
         const { orderId } = req.params;
         const { status } = req.body;
 
-        const updatedOrder = await Order.findByIdAndUpdate(
+        const validStatuses = ["Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
+        
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ success: false, message: "Invalid status" });
+        }
+
+        const order = await Order.findByIdAndUpdate(
             orderId,
             { status },
             { new: true }
         );
 
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
+
         res.status(200).json({
             success: true,
-            message: "Status updated successfully",
-            order: updatedOrder
+            message: `Order status updated to ${status}`,
+            order
         });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const cancelOrder = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const order = await Order.findById(orderId);
+
+        if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+
+        if (order.status === "Cancelled") return res.status(400).json({ success: false, message: "Order already cancelled" });
+
+        const orderDate = new Date(order.createdAt);
+        const currentDate = new Date();
+        const diffInHours = (currentDate - orderDate) / (1000 * 60 * 60);
+
+        if (diffInHours > 48) {
+            return res.status(400).json({ success: false, message: "Cancellation window (48h) has expired" });
+        }
+
+        order.status = "Cancelled";
+        await order.save();
+
+        res.status(200).json({ success: true, message: "Order cancelled successfully", order });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

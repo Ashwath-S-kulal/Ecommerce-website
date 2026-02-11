@@ -4,35 +4,68 @@ import axios from "axios";
 import {
     ArrowLeft, Printer, Package, MapPin,
     Phone, Mail, Receipt, CreditCard, Clock,
-    CheckCircle2, Truck, Calendar, ShieldCheck, ChevronRight
+    CheckCircle2, Truck, Calendar, ShieldCheck, ChevronRight,
+    Settings, XCircle, AlertTriangle, RefreshCw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner"; // Assuming you use sonner for toasts
 
 export default function OrderDetailsPage() {
     const { orderId } = useParams();
     const navigate = useNavigate();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [updating, setUpdating] = useState(false);
+
+    // Replace this with your actual Admin Auth logic (e.g., from Redux or Context)
+
+    const fetchOrderDetails = async () => {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const { data } = await axios.get(`/api/order/getorder/${orderId}`, {
+                headers: { Authorization: `Bearer ${accessToken}` }
+            });
+            if (data.success) setOrder(data.order);
+        } catch (err) {
+            console.error("Error fetching order:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         if (!orderId) return;
-        const fetchOrderDetails = async () => {
-            try {
-                const accessToken = localStorage.getItem('accessToken');
-                const { data } = await axios.get(`/api/order/getorder/${orderId}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` }
-                });
-                if (data.success) setOrder(data.order);
-            } catch (err) {
-                console.error("Error fetching order:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchOrderDetails();
     }, [orderId]);
+
+    // Function to handle both generic status updates and cancellations
+    const handleUpdateStatus = async (newStatus) => {
+        setUpdating(true);
+
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+            const { data } = await axios.post(`/api/order/updateorderstatusadmin/${orderId}`,
+                { status: newStatus },
+                { headers: { Authorization: `Bearer ${accessToken}` } }
+            );
+
+            if (data.success) {
+                // Keep the green line full for a moment before resetting
+                setTimeout(() => {
+                    setOrder(data.order);
+                }, 800);
+                toast.success(`Order marked as ${newStatus}`);
+            }
+        } catch (err) {
+            console.log(err)
+            toast.error("Failed to update status");
+        } finally {
+            setUpdating(false);
+            
+        }
+    };
 
     if (loading) return (
         <div className="h-screen flex flex-col items-center justify-center bg-white gap-4">
@@ -50,11 +83,12 @@ export default function OrderDetailsPage() {
         Delivered: "bg-emerald-500 text-white shadow-emerald-200",
         Cancelled: "bg-red-500 text-white shadow-red-200",
     };
+    const statuses = ["Pending", "Confirmed", "Shipped", "Delivered"];
 
     return (
         <div className="min-h-screen bg-[#FBFBFE] p-6 md:p-12 text-slate-900 selection:bg-pink-100 shadow-2xl rounded-2xl">
             <div className="max-w-7xl mx-auto">
-               <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-6">
+                <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-6">
                     <div className="space-y-2">
                         <button
                             onClick={() => navigate(-1)}
@@ -67,7 +101,7 @@ export default function OrderDetailsPage() {
                             Order <span className="text-slate-300 not-italic">#{order._id.slice(-8).toUpperCase()}</span>
                         </h1>
                     </div>
-                    
+
                     <div className={`${statusThemes[order.status]} flex items-center gap-4 px-8 py-4 rounded-[24px] shadow-xl transition-all duration-500 scale-100 hover:scale-105`}>
                         <div className="relative flex h-3 w-3">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
@@ -79,7 +113,8 @@ export default function OrderDetailsPage() {
                         </div>
                     </div>
                 </header>
-                <div className="flex flex-col">
+
+                <div className="flex flex-col gap-10">
                     <main className="lg:col-span-8 space-y-8 shadow-md rounded-xl">
                         <section className="bg-white rounded-[40px] border border-slate-100 shadow-[0_10px_40px_rgba(0,0,0,0.02)] overflow-hidden">
                             <div className="p-8 border-b border-slate-50 flex justify-between items-center">
@@ -123,6 +158,7 @@ export default function OrderDetailsPage() {
                     </main>
 
                     <div className="flex justify-between gap-7 mt-5">
+                        {/* Destination Card */}
                         <div className="bg-white rounded-xl border border-slate-100 shadow-md p-8 space-y-8 w-full ">
                             <div>
                                 <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
@@ -148,6 +184,7 @@ export default function OrderDetailsPage() {
                             </div>
                         </div>
 
+                        {/* Calculation Card */}
                         <div className="bg-white rounded-xl border border-slate-100 shadow-md p-8 relative overflow-hidden group w-full">
                             <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-2">
                                 <Receipt size={16} className="text-pink-500" /> Calculation
@@ -178,6 +215,127 @@ export default function OrderDetailsPage() {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+
+                    {/* --- SHIPMENT JOURNEY TRACKER --- */}
+                    <section className="bg-white rounded-[40px] border border-slate-100 shadow-[0_10px_40px_rgba(0,0,0,0.02)] p-10 mb-10 relative overflow-hidden">
+
+                        {/* Admin Action Loading Bar (Top of Card) */}
+                        <div className="absolute top-0 left-0 w-full h-1 bg-slate-50">
+                            <div
+                                className={`h-full bg-emerald-500 transition-all duration-700 ${updating ? "w-full opacity-100" : "w-0 opacity-0"}`}
+                            />
+                        </div>
+
+                        <h2 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-10 flex items-center gap-2">
+                            <Truck size={16} className="text-pink-500" /> Live Progress Manifest
+                        </h2>
+
+                        <div className="relative">
+                            {[
+                                { label: "Pending", desc: "Awaiting administrative verification." },
+                                { label: "Confirmed", desc: "Order details verified and processing." },
+                                { label: "Shipped", desc: "Package dispatched to logistics partner." },
+                                { label: "Delivered", desc: "Package reached final destination." }
+                            ].map((step, index, array) => {
+                                const currentIdx = statuses.indexOf(order.status);
+                                const stepIdx = statuses.indexOf(step.label);
+
+                                // Logic: Is this step finished?
+                                const isCompleted = currentIdx >= stepIdx && order.status !== "Cancelled";
+                                // Logic: Is this the current active step?
+                                const isActive = order.status === step.label;
+                                const isLast = index === array.length - 1;
+
+                                return (
+                                    <div key={step.label} className="relative flex gap-8 pb-12 last:pb-0 group">
+
+                                        {/* The "Green Line" Connector */}
+                                        {!isLast && (
+                                            <div className="absolute left-[11px] top-[28px] w-[3px] h-full bg-slate-100">
+                                                <div
+                                                    className={`w-full bg-emerald-500 transition-all duration-1000 ease-in-out ${currentIdx > stepIdx ? "h-full" : "h-0"
+                                                        }`}
+                                                />
+                                            </div>
+                                        )}
+
+                                        {/* Status Node (The Circle) */}
+                                        <div className="relative z-10">
+                                            <div className={`w-6 h-6 rounded-full border-4 transition-all duration-500 flex items-center justify-center ${isCompleted
+                                                    ? "bg-emerald-500 border-emerald-100 scale-125 shadow-[0_0_20px_rgba(16,185,129,0.4)]"
+                                                    : "bg-white border-slate-200"
+                                                }`}>
+                                                {isCompleted ? (
+                                                    <CheckCircle2 size={12} className="text-white" />
+                                                ) : (
+                                                    <div className="w-1.5 h-1.5 bg-slate-200 rounded-full" />
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Content Area */}
+                                        <div className="flex-1 -mt-1">
+                                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                                <div>
+                                                    <div className="flex items-center gap-3">
+                                                        <h3 className={`font-black italic uppercase tracking-tighter text-xl transition-all duration-500 ${isCompleted ? "text-slate-900" : "text-slate-300"
+                                                            }`}>
+                                                            {step.label}
+                                                        </h3>
+                                                        {isActive && (
+                                                            <Badge className="bg-emerald-500 text-white border-none text-[8px] px-2 py-0.5 animate-bounce">
+                                                                ACTIVE
+                                                            </Badge>
+                                                        )}
+                                                    </div>
+                                                    <p className={`text-sm font-bold mt-1 transition-colors ${isCompleted ? "text-slate-500" : "text-slate-200"
+                                                        }`}>
+                                                        {step.desc}
+                                                    </p>
+                                                </div>
+
+                                                {/* ADMIN QUICK-ACTION BUTTONS (Linked to each field) */}
+
+                                                <button
+                                                    onClick={() => handleUpdateStatus(step.label)}
+                                                    disabled={updating || order.status === step.label}
+                                                    className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border-2 transition-all 
+                                        ${isActive
+                                                            ? "bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed"
+                                                            : "bg-white border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white shadow-[3px_3px_0px_0px_rgba(15,23,42,1)] active:shadow-none"
+                                                        }`}
+                                                >
+                                                    {isActive ? "Current State" : `Set to ${step.label}`}
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </section>
+                    <div className="space-y-6">
+                        <p className="text-[10px] font-black text-red-500 uppercase tracking-[0.3em]">Danger Zone</p>
+                        <div className="bg-red-50/50 border-2 border-dashed border-red-200 rounded-[32px] p-8 flex flex-col gap-5">
+                            <div className="flex items-center gap-3 text-red-600">
+                                <AlertTriangle size={20} />
+                                <span className="text-xs font-black italic uppercase tracking-wider">Abort Logistics</span>
+                            </div>
+                            <button
+                                disabled={updating || order.status === "Cancelled"}
+                                onClick={() => handleUpdateStatus("Cancelled")}
+                                className={`w-full flex items-center justify-center gap-3 px-8 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-sm transition-all
+                                                ${order.status === "Cancelled"
+                                        ? "bg-slate-100 text-slate-400 border-2 border-slate-200"
+                                        : "bg-red-600 text-white hover:bg-red-700 shadow-[6px_6px_0px_0px_rgba(153,27,27,1)] active:shadow-none active:translate-x-1 active:translate-y-1"}`}
+                            >
+                                <XCircle size={20} />
+                                Cancel Order
+                            </button>
                         </div>
                     </div>
                 </div>
