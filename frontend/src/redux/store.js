@@ -12,11 +12,13 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import Products from '@/pages/Products'
+import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2'
 
 const persistConfig = {
   key: 'Ekart',
-  version: 1,
+  version: 2,
   storage,
+  stateReconciler: autoMergeLevel2, // Add this line
 }
 const rootReducer = combineReducers({
     user: userSlice,

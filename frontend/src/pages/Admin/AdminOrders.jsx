@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import ProductNullImg from "../../assets/Product Doesnt Exist.webp"
 
 export default function ShowUserOrders() {
   const [orders, setOrders] = useState([]);
@@ -62,10 +63,56 @@ export default function ShowUserOrders() {
   const statusOptions = ["All", "Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
 
   if (loading) return (
-    <div className="flex justify-center items-center h-screen bg-slate-50/50">
-      <div className="text-center animate-pulse">
-        <div className="w-12 h-12 border-4 border-t-pink-500 border-slate-200 rounded-full animate-spin mx-auto mb-4" />
-        <p className="font-black text-slate-400 uppercase tracking-widest text-xs">Loading Master Database</p>
+    <div className="min-h-screen bg-slate-50/30 p-6 md:p-10 animate-pulse">
+      <div className="max-w-7xl mx-auto space-y-6">
+        
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+          <div className="space-y-2">
+            <div className="h-8 w-48 bg-slate-200 rounded-lg" />
+            <div className="h-4 w-64 bg-slate-100 rounded" />
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+            <div className="h-10 w-full sm:w-64 bg-white border border-slate-200 rounded-xl" />
+            <div className="h-10 w-full sm:w-32 bg-white border border-slate-200 rounded-xl" />
+            <div className="h-10 w-full sm:w-32 bg-white border border-slate-200 rounded-xl" />
+          </div>
+        </div>
+
+        <div className="bg-white border border-slate-200 rounded-[32px] overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-slate-50/50">
+                <tr>
+                  {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                    <th key={i} className="p-5">
+                      <div className="h-2 w-16 bg-slate-200 rounded" />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[1, 2, 3, 4, 5].map((row) => (
+                  <tr key={row} className="border-t border-slate-50">
+                    <td className="p-5"><div className="h-3 w-20 bg-slate-100 rounded" /></td>
+                    <td className="p-5"><div className="h-4 w-24 bg-slate-200 rounded" /></td>
+                    <td className="p-5"><div className="h-3 w-16 bg-slate-100 rounded" /></td>
+                    <td className="p-5">
+                      <div className="flex items-center -space-x-3">
+                        <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white" />
+                        <div className="w-8 h-8 rounded-full bg-slate-200 border-2 border-white" />
+                        <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white" />
+                      </div>
+                    </td>
+                    <td className="p-5"><div className="h-4 w-16 bg-slate-200 rounded" /></td>
+                    <td className="p-5"><div className="h-6 w-20 bg-slate-100 rounded-full" /></td>
+                    <td className="p-5 text-right"><div className="h-8 w-8 bg-slate-50 rounded-lg ml-auto" /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -138,14 +185,14 @@ export default function ShowUserOrders() {
                       <span className="font-bold text-slate-800 text-sm">{order?.user?.firstName || "Guest User"}</span>
                     </TableCell>
                     <TableCell className="p-5 text-xs font-medium text-slate-500">
-                      {new Date(order.createdAt).toLocaleDateString()}
+                      {new Date(order.createdAt).toLocaleDateString('en-GB')}
                     </TableCell>
                     <TableCell className="p-5">
                       <div className="flex items-center -space-x-3">
                         {order.products.slice(0, 3).map((item, i) => (
                           <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-100 overflow-hidden shadow-sm">
                             <img
-                              src={item?.productId?.productImg?.[0]?.url || 'https://via.placeholder.com/150'}
+                              src={item?.productId?.productImg?.[0]?.url || ProductNullImg}
                               className="w-full h-full object-cover"
                               alt=""
                             />

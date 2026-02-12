@@ -130,16 +130,7 @@ const AdminLayout = () => {
           </div>
 
           <div className="flex items-center gap-2 lg:gap-4">
-            <button className="p-2 lg:p-2.5 rounded-xl bg-slate-50 text-slate-400 hover:text-pink-600 transition-colors relative">
-              <Bell size={20} />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-pink-600 rounded-full border-2 border-white" />
-            </button>
-            <button className="hidden sm:block p-2.5 rounded-xl bg-slate-50 text-slate-400 hover:text-pink-600 transition-colors">
-              <Settings size={20} />
-            </button>
-
             <div className="h-8 w-px bg-slate-100 mx-1 lg:mx-2" />
-
             <div className="flex items-center gap-3 lg:pl-2">
               <div className="text-right hidden sm:block">
                 <p className="text-xs font-black text-slate-800 leading-none">Avarse</p>

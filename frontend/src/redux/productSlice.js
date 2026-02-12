@@ -7,7 +7,9 @@ const productSlice = createSlice({
     cart: {items:[], totalPrice:0},
     wishlist:{items:[]},
     addresses:[],
-    selectedAddress:null 
+    selectedAddress:null ,
+    notifications: [],
+    unreadCount: 0
   },
   reducers: {
     setProducts: (state, action) => {
@@ -18,6 +20,22 @@ const productSlice = createSlice({
     },
     setWishlist: (state, action) => {
       state.wishlist = action.payload;
+    },
+
+     setNotifications: (state, action) => {
+      state.notifications = action.payload;
+      state.unreadCount = action.payload.filter(n => !n.isRead).length;
+    },
+    markAllNotificationsRead: (state) => {
+      state.notifications = state.notifications.map(n => ({ ...n, isRead: true }));
+      state.unreadCount = 0;
+    },
+    markSingleRead: (state, action) => {
+      const notification = state.notifications.find(n => n._id === action.payload);
+      if (notification && !notification.isRead) {
+        notification.isRead = true;
+        state.unreadCount -= 1;
+      }
     },
 
     addAddress:(state, action)=>{
@@ -33,9 +51,10 @@ const productSlice = createSlice({
       if(state.selectedAddress===action.payload){
         state.selectedAddress=null
       }
-    }
+    },
+   
   },
 });
 
-export const { setProducts, setCart, setWishlist,addAddress,setSelectedAddress,deleteAddress } = productSlice.actions;
+export const { setProducts, setCart, setWishlist,addAddress,setSelectedAddress,deleteAddress,setNotifications,markAllNotificationsRead,markSingleRead } = productSlice.actions;
 export default productSlice.reducer;

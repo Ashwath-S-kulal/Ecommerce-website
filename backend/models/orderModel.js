@@ -38,6 +38,11 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
+    subtotal:{
+      type:Number,
+      required:true,
+    },
+
     tax: {
       type: Number,
       required: true,

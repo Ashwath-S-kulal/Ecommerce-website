@@ -1,29 +1,46 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { setCart, setWishlist } from '@/redux/productSlice';
+import { setCart, setNotifications, setWishlist } from '@/redux/productSlice';
 import { Button } from '@/components/ui/button';
 import { ShieldCheck, Truck, Users, ArrowUpRight, Heart, MapPin, Leaf, Zap, CheckCircle2, Calendar, Star, Instagram } from 'lucide-react';
 
 export default function Home() {
   const dispatch = useDispatch();
+  const { user } = useSelector(store => store.user);
+
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
     if (!token) return;
+
     const loadUserData = async () => {
       try {
         const headers = { Authorization: `Bearer ${token}` };
-        const [cartRes, wishlistRes] = await Promise.all([
+        const requests = [
           axios.get("/api/cart/", { headers }),
-          axios.get("/api/wishlist/get", { headers }),
-        ]);
-        if (cartRes.data.success) dispatch(setCart(cartRes.data.cart));
-        if (wishlistRes.data.success) dispatch(setWishlist(wishlistRes.data.wishlist));
-      } catch (err) { console.error(err); }
+          axios.get("/api/wishlist/get", { headers })
+        ];
+
+        const isAdmin = user?.role === 'admin';
+        if (isAdmin) {
+          requests.push(axios.get("/api/notification/get", { headers }));
+        }
+
+        const responses = await Promise.all(requests);
+        if (responses[0].data.success) dispatch(setCart(responses[0].data.cart));
+        if (responses[1].data.success) dispatch(setWishlist(responses[1].data.wishlist));
+
+        if (isAdmin && responses[2] && responses[2].data.success) {
+          dispatch(setNotifications(responses[2].data.notifications));
+        }
+      } catch (err) {
+        console.error("Error loading home data:", err);
+      }
     };
+
     loadUserData();
-  }, [dispatch]);
+  }, [dispatch, user]);
 
   return (
     <div className="bg-[#FCFAFA] text-slate-900 selection:bg-pink-100 selection:text-pink-600 pb-20 md:pb-0 overflow-x-hidden">

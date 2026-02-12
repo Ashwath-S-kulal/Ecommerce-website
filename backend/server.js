@@ -5,7 +5,8 @@ import userRoute from "./routes/userRoute.js";
 import productRoute from "./routes/productRoute.js"
 import cartRoute from "./routes/cartRoute.js";
 import wishlistRoute from "./routes/wishlistRoute.js";
-import orderRoute from "./routes/orderRoute.js"
+import orderRoute from "./routes/orderRoute.js";
+import notificationRoutes from "./routes/notificationRoute.js"
 import cors from "cors";
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use("/api/product", productRoute);
 app.use("/api/cart", cartRoute);
 app.use("/api/wishlist", wishlistRoute);
 app.use("/api/order", orderRoute);
+app.use("/api/notification", notificationRoutes)
 
 
 

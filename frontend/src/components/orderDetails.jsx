@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { Package, MapPin, Phone, Receipt, CreditCard, XCircle, AlertCircle, Clock } from "lucide-react";
+import { Package, MapPin, Phone, Receipt, CreditCard, XCircle, AlertCircle, Clock, Package2, PackageCheck, Package2Icon } from "lucide-react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -14,6 +14,9 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import ProductNullImg from "../assets/Product Doesnt Exist.webp"
+import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
 
 const OrderSkeleton = () => (
     <div className="border-2 border-slate-100 rounded-3xl overflow-hidden animate-pulse bg-white">
@@ -100,21 +103,29 @@ export default function ShowUserOrders() {
                 {loading ? (
                     [1, 2, 3].map((i) => <OrderSkeleton key={i} />)
                 ) : orders.length === 0 ? (
-                    <div className="text-center py-20 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200">
-                        <Package className="mx-auto text-slate-300 mb-4" size={48} />
-                        <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No orders found</p>
+                    <div className="flex items-center justify-center px-4 py-16 sm:py-24 lg:py-32 bg-white rounded-3xl sm:rounded-[40px] shadow-md border border-gray-100">
+                        <div className="w-full max-w-md text-center bg-slate-50 rounded-2xl sm:rounded-3xl border-2 border-dashed border-slate-200 px-6 py-12 sm:py-16">
+                            <Package className="mx-auto text-slate-300 mb-6" size={40} />
+                            <p className="text-slate-500 font-semibold uppercase tracking-widest text-xs sm:text-sm">
+                                No orders found
+                            </p>
+                            <p className="mt-3 text-slate-400 text-sm sm:text-base">
+                                When you place orders, they will appear here.
+                            </p>
+                        </div>
                     </div>
+
                 ) : (
                     orders.map((order) => (
                         <div key={order._id} className="group border-2 border-slate-100 rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 bg-white">
                             <div className="bg-slate-50/50 px-8 py-5 flex flex-wrap justify-between items-center border-b border-slate-100 gap-4">
                                 <div>
                                     <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Ordered on</label>
-                                    <p className="text-xs font-bold text-slate-700">{new Date(order.createdAt).toLocaleDateString()}</p>
+                                    <p className="text-xs font-bold text-slate-700">{new Date(order.createdAt).toLocaleDateString('en-GB')}</p>
                                 </div>
                                 <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-wider shadow-sm ${order.status === 'Delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                                        order.status === 'Cancelled' ? 'bg-slate-100 text-slate-500 border-slate-200' :
-                                            'bg-pink-50 text-pink-600 border-pink-200'
+                                    order.status === 'Cancelled' ? 'bg-slate-100 text-slate-500 border-slate-200' :
+                                        'bg-pink-50 text-pink-600 border-pink-200'
                                     }`}>
                                     <span className={`w-1.5 h-1.5 rounded-full ${order.status === 'Delivered' ? 'bg-emerald-500' : order.status === 'Cancelled' ? 'bg-slate-400' : 'bg-pink-500 animate-pulse'}`} />
                                     {order.status}
@@ -126,10 +137,10 @@ export default function ShowUserOrders() {
                                     {order.products.map((item) => (
                                         <div key={item._id} className="flex items-center gap-4">
                                             <div className="w-14 h-14 bg-slate-100 rounded-xl flex-shrink-0 overflow-hidden border border-slate-100">
-                                                <img src={item.productId?.productImg?.[0]?.url || 'https://via.placeholder.com/150'} alt={item.productId?.productName} className="w-full h-full object-cover" />
+                                                <img src={item.productId?.productImg?.[0]?.url || ProductNullImg} alt={item.productId?.productName} className="w-full h-full object-cover" />
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-bold text-slate-900 truncate">{item.productId?.productName}</p>
+                                                <p className="text-sm font-bold text-slate-900 truncate">{item.productId?.productName || "Product Doesn't exist"} </p>
                                                 <p className="text-[10px] font-bold text-slate-400 uppercase">Qty: {item.quantity} × ₹{item.productId?.productPrice?.toLocaleString()}</p>
                                             </div>
                                             <p className="text-sm font-black text-slate-900">₹{(item.productId?.productPrice * item.quantity).toLocaleString()}</p>
@@ -179,8 +190,8 @@ export default function ShowUserOrders() {
                                             return (
                                                 <div key={step} className="relative z-10 flex flex-col items-center group">
                                                     <div className={`w-4 h-4 rounded-full border-[3px] transition-all duration-500 flex items-center justify-center ${isActive
-                                                            ? `bg-white ${activeColor} shadow-[0_0_15px_${shadowColor}]`
-                                                            : 'bg-white border-slate-200'
+                                                        ? `bg-white ${activeColor} shadow-[0_0_15px_${shadowColor}]`
+                                                        : 'bg-white border-slate-200'
                                                         }`}>
                                                         {isCurrent && (
                                                             <div className={`w-full h-full rounded-full ${activeBg} animate-ping opacity-30`} />
@@ -192,8 +203,8 @@ export default function ShowUserOrders() {
 
                                                     <div className="absolute top-6 flex flex-col items-center min-w-[80px]">
                                                         <span className={`text-[9px] font-black uppercase tracking-widest text-center transition-colors duration-300 ${isActive
-                                                                ? (isCancelled && isCurrent ? 'text-red-600' : 'text-slate-900')
-                                                                : 'text-slate-300'
+                                                            ? (isCancelled && isCurrent ? 'text-red-600' : 'text-slate-900')
+                                                            : 'text-slate-300'
                                                             }`}>
                                                             {step}
                                                         </span>

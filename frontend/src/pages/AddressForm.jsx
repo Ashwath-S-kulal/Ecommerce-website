@@ -240,8 +240,8 @@ export default function AddressForm() {
             <Button variant="ghost" onClick={() => setIsConfirmOpen(false)} disabled={loading} className="flex-1 h-12 rounded-xl font-bold">
               Cancel
             </Button>
-            <Button onClick={handleFinalCheckout} disabled={loading} className="flex-1 h-12 bg-pink-500 hover:bg-pink-600 text-white rounded-xl font-bold shadow-lg shadow-pink-200">
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Confirm & Pay"}
+            <Button onClick={handleFinalCheckout} disabled={loading} className="flex-1 cursor-pointer h-12 bg-pink-500 hover:bg-pink-600 text-white rounded-xl font-bold shadow-lg shadow-pink-200">
+              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Confirm & Buy"}
             </Button>
           </DialogFooter>
         </DialogContent>

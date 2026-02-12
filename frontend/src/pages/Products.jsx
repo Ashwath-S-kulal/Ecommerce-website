@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux'
 import { setProducts } from '@/redux/productSlice'
-import { Search, RotateCcw, Filter, ChevronRight, Hash, Sparkles, SlidersHorizontal, X } from 'lucide-react'
+import { Search, RotateCcw, Filter, ChevronRight, ChevronLeft, Hash, Sparkles, SlidersHorizontal, X } from 'lucide-react'
 import { Skeleton } from "@/components/ui/skeleton"
 
 const WishlistSkeleton = () => (
@@ -55,10 +55,28 @@ export default function Products() {
     const [maxPrice, setMaxPrice] = useState(0)
     const [absoluteMax, setAbsoluteMax] = useState(0)
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerRow, setItemsPerRow] = useState(6);
+
     const dispatch = useDispatch()
 
     const categories = ["All", ...new Set(allProducts.map(p => p.category).filter(Boolean))];
     const brands = ["All", ...new Set(allProducts.map(p => p.brand).filter(Boolean))];
+
+    // Detect screen size to maintain "Two Rows" logic
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            if (width >= 1280) setItemsPerRow(6);
+            else if (width >= 1024) setItemsPerRow(5);
+            else if (width >= 768) setItemsPerRow(4);
+            else if (width >= 640) setItemsPerRow(3);
+            else setItemsPerRow(2);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const getAllProducts = async () => {
         try {
@@ -96,9 +114,36 @@ export default function Products() {
         else if (sortOrder === "hightolow") filtered.sort((a, b) => b.productPrice - a.productPrice)
 
         dispatch(setProducts(filtered))
+        setCurrentPage(1);
     }, [search, category, brand, sortOrder, minPrice, maxPrice, allProducts, dispatch])
 
     useEffect(() => { getAllProducts(); }, []);
+
+    const itemsPerPage = itemsPerRow * 2;
+    const totalPages = Math.ceil(products.length / itemsPerPage);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
+
+    const getPaginationRange = () => {
+        const range = [];
+        const delta = 1;
+
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= currentPage - delta && i <= currentPage + delta)) {
+                range.push(i);
+            } else if (range[range.length - 1] !== "...") {
+                range.push("...");
+            }
+        }
+        return range;
+    };
+
+    const handlePageChange = (page) => {
+        if (page === "...") return;
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     const recentArrivals = [...allProducts]
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -122,9 +167,10 @@ export default function Products() {
                         <h1 className='text-2xl font-bold tracking-tight text-gray-900'>Products</h1>
                     </div>
                     <p className='hidden sm:block text-xs font-medium text-gray-400 uppercase tracking-tighter'>
-                        Index: {products?.length} / {allProducts.length}
+                        Page {currentPage} of {totalPages || 1} — Total: {products?.length}
                     </p>
                 </div>
+
                 <div className='grid grid-cols-1 lg:grid-cols-4 gap-4 mb-16'>
                     <div className='lg:col-span-3 bg-white border border-gray-100 rounded-3xl p-4 lg:p-6 shadow-sm flex flex-col gap-6'>
                         <div className='flex items-center gap-4'>
@@ -213,11 +259,12 @@ export default function Products() {
                         </div>
                     </div>
                 </div>
-                <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-10'>
+
+                <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-4 gap-y-10 min-h-[400px]'>
                     {loading ? (
                         <WishlistSkeleton />
-                    ) : products.length > 0 ? (
-                        products.map((p) => (
+                    ) : currentProducts.length > 0 ? (
+                        currentProducts.map((p) => (
                             <div key={p._id} className="transition-all duration-300 hover:-translate-y-2">
                                 <ProductCard product={p} />
                             </div>
@@ -230,6 +277,43 @@ export default function Products() {
                     )}
                 </div>
 
+                {!loading && totalPages > 1 && (
+                    <div className='mt-20 flex justify-center items-center gap-2'>
+                        <button
+                            disabled={currentPage === 1}
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            className='p-2 rounded-xl border border-gray-100 bg-white hover:bg-black hover:text-white disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-black transition-all shadow-sm'
+                        >
+                            <ChevronLeft size={20} />
+                        </button>
+
+                        <div className='flex items-center gap-1'>
+                            {getPaginationRange().map((page, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handlePageChange(page)}
+                                    className={`w-10 h-10 rounded-xl text-xs font-bold transition-all ${currentPage === page
+                                        ? 'bg-black text-white shadow-md'
+                                        : page === '...'
+                                            ? 'cursor-default text-gray-400'
+                                            : 'bg-white border border-gray-100 text-gray-600 hover:border-black'
+                                        }`}
+                                >
+                                    {page}
+                                </button>
+                            ))}
+                        </div>
+
+                        <button
+                            disabled={currentPage === totalPages}
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            className='p-2 rounded-xl border border-gray-100 bg-white hover:bg-black hover:text-white disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-black transition-all shadow-sm'
+                        >
+                            <ChevronRight size={20} />
+                        </button>
+                    </div>
+                )}
+
                 {!loading && recentArrivals.length > 0 && (
                     <HorizontalScroller
                         title="Recent Arrivals"
@@ -240,9 +324,52 @@ export default function Products() {
             </div>
 
             <style jsx global>{`
-                .no-scrollbar::-webkit-scrollbar { display: none; }
-                .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-            `}</style>
+    /* 1. Default: Hide scrollbar for mobile/small screens (below 768px) */
+    @media (max-width: 767px) {
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    }
+
+    /* 2. MD Breakpoint and up: Show Beautiful Custom Scrollbar */
+    @media (min-width: 768px) {
+        /* Define the width/height of the scrollbar */
+        .no-scrollbar::-webkit-scrollbar {
+            display: block; /* Show it */
+            height: 6px;    /* Height for horizontal scroll */
+            width: 6px;     /* Width for vertical scroll */
+        }
+
+        /* The background of the scrollbar area */
+        .no-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        /* The actual draggable handle */
+        .no-scrollbar::-webkit-scrollbar-thumb {
+            background: #d1d1d1; /* Subtle gray */
+            border-radius: 10px;
+            transition: background 0.3s ease;
+        }
+
+        /* Hover effect on the handle */
+        .no-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #000000; /* Turns black on hover to match your theme */
+        }
+        
+        /* Optional: Add padding to the container to ensure scrollbar doesn't overlap content */
+        .no-scrollbar {
+            padding-bottom: 12px;
+            scrollbar-width: thin; /* For Firefox */
+            scrollbar-color: #d1d1d1 #f1f1f1; /* For Firefox */
+        }
+    }
+`}</style>
         </div>
     )
 }

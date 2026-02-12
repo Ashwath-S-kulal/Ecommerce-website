@@ -146,10 +146,72 @@ const AllUsers = () => {
 
 if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-        <p className="mt-4 text-gray-500 font-medium">Loading user directory...</p>
+      <div className="bg-[#f8fafc] min-h-screen pb-20 animate-pulse">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+        
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+          <div className="space-y-3">
+            <div className="h-10 w-64 bg-slate-200 rounded-lg" />
+            <div className="h-4 w-80 bg-slate-100 rounded" />
+          </div>
+          <div className="bg-white p-1 rounded-xl border border-slate-200 flex items-center w-32">
+             <div className="px-5 py-2 space-y-2">
+               <div className="h-2 w-16 bg-slate-100 rounded" />
+               <div className="h-6 w-10 bg-indigo-100 rounded" />
+             </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-slate-100">
+              <thead className="bg-slate-50/50">
+                <tr>
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <th key={i} className="px-6 py-5">
+                      <div className="h-2 w-20 bg-slate-200 rounded" />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {[1, 2, 3, 4, 5].map((row) => (
+                  <tr key={row}>
+                    <td className="px-6 py-5">
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-2xl bg-slate-200 shadow-sm" />
+                        <div className="space-y-2">
+                          <div className="h-4 w-32 bg-slate-200 rounded" />
+                          <div className="h-3 w-40 bg-slate-100 rounded" />
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-5">
+                      <div className="h-6 w-16 bg-slate-100 rounded-lg" />
+                    </td>
+                    <td className="px-6 py-5">
+                      <div className="h-4 w-28 bg-slate-100 rounded" />
+                    </td>
+                    <td className="px-6 py-5">
+                      <div className="space-y-2">
+                        <div className="h-3 w-20 bg-slate-200 rounded" />
+                        <div className="h-2 w-32 bg-slate-100 rounded" />
+                      </div>
+                    </td>
+                    <td className="px-6 py-5">
+                      <div className="h-4 w-24 bg-slate-100 rounded" />
+                    </td>
+                    <td className="px-6 py-5 text-right">
+                      <div className="h-9 w-9 bg-slate-50 rounded-xl ml-auto" />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+    </div>  
     );
   }
 

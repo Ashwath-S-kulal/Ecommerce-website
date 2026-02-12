@@ -27,10 +27,7 @@ export default function OrderSuccess() {
     return (
         <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-6">
             <div className="max-w-2xl w-full">
-                {/* Success Card */}
                 <div className="bg-white border border-slate-100 rounded-[40px] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.05)] overflow-hidden">
-
-                    {/* Animated Header */}
                     <div className="bg-slate-900 p-12 text-center relative overflow-hidden">
                         <div className="absolute inset-0 opacity-10">
                             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-500 via-transparent to-transparent" />
@@ -51,7 +48,6 @@ export default function OrderSuccess() {
 
                         <Separator />
 
-                        {/* Messaging */}
                         <div className="space-y-4">
                             <div className="flex justify-center gap-2">
                                 {[1, 2, 3].map((i) => (
@@ -63,15 +59,14 @@ export default function OrderSuccess() {
                                 Check your email for a little note from us about your order.              </p>
                         </div>
 
-                        {/* Action Buttons */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
                             <Link to="/orders">
-                                <Button className="w-full h-14 bg-slate-900 hover:bg-black text-white rounded-2xl font-black transition-all flex items-center justify-center gap-2">
+                                <Button className="w-full h-14 cursor-pointer bg-slate-900 hover:bg-black text-white rounded-2xl font-black transition-all flex items-center justify-center gap-2">
                                     <Package size={18} /> View Status
                                 </Button>
                             </Link>
                             <Link to="/products">
-                                <Button variant="outline" className="w-full h-14 border-slate-200 hover:bg-slate-50 text-slate-900 rounded-2xl font-black transition-all flex items-center justify-center gap-2">
+                                <Button variant="outline" className="w-full cursor-pointer h-14 border-slate-200 hover:bg-slate-50 text-slate-900 rounded-2xl font-black transition-all flex items-center justify-center gap-2">
                                     <ShoppingBag size={18} /> Back to Shop
                                 </Button>
                             </Link>

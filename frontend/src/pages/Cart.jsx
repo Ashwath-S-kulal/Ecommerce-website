@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { ShoppingBag, Trash2, Minus, Plus, ArrowLeft, ShieldCheck, Heart, Truck } from 'lucide-react';
+import { ShoppingBag, Trash2, Minus, Plus, ArrowLeft, ShieldCheck, Heart, Truck, ShoppingCart } from 'lucide-react';
 import axios from 'axios';
 import { setCart } from '@/redux/productSlice';
 import { toast } from 'sonner';
@@ -26,7 +26,7 @@ export default function Cart() {
 
   const loadCart = async () => {
     try {
-      const res = await axios.get(`${API}/get`, {
+      const res = await axios.get(`${API}/`, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
       if (res.data.success) {
@@ -76,7 +76,7 @@ export default function Cart() {
           <div className="flex items-end justify-between mb-5 border-b pb-4 border-gray-200">
             <div>
               <h1 className='text-3xl font-black text-gray-900 tracking-tighter'>My Cart</h1>
-              <p className="text-[11px] pt-5 font-bold text-gray-400 uppercase tracking-widest">{cart.items.length} Units</p>
+              <p className="text-[11px] pt-5 font-bold text-gray-400 uppercase tracking-widest">{cart?.items?.length} Units</p>
             </div>
             <Link to="/products" className="flex items-center text-[11px] font-bold uppercase tracking-widest text-pink-600 hover:opacity-70 transition-opacity">
               <ArrowLeft className="mr-1 h-3 w-3" />
@@ -100,7 +100,7 @@ export default function Cart() {
                 <Card key={index} className="overflow-hidden border border-gray-100 shadow-sm bg-white rounded-2xl">
                   <div className='flex p-3 gap-4 items-center'>
                     <img
-                      src={product.productId?.productImg?.[0]?.url}
+                      src={product?.productId?.productImg?.[0]?.url}
                       alt='img'
                       className='w-20 h-24 object-cover rounded-lg bg-gray-50'
                     />
@@ -108,36 +108,36 @@ export default function Cart() {
                     <div className='flex-1 min-w-0'>
                       <div className="flex justify-between items-start">
                         <h2 className='font-bold text-sm text-gray-800 truncate max-w-[600px]'>
-                          {product.productId.productName}
+                          {product?.productId?.productName}
                         </h2>
                         <div >
-                          <button onClick={() => handleRemove(product.productId._id)} className="text-red-400 hover:text-red-600 font-semibold transition-colors flex gap-1 items-center">
+                          <button onClick={() => handleRemove(product?.productId?._id)} className="text-red-400 hover:text-red-600 font-semibold transition-colors flex gap-1 items-center">
                             <Trash2 size={16} /><span className='text-sm'>Remove</span>
                           </button>
                         </div>
 
                       </div>
-                      <p className='text-[11px] font-medium text-gray-400'>{product.productId.category}</p>
+                      <p className='text-[11px] font-medium text-gray-400'>{product.productId?.category}</p>
 
                       <div className='flex items-center justify-between mt-3'>
                         <div className="flex items-center border border-gray-100 rounded-md bg-gray-50/50 scale-90 -ml-2">
                           <button
-                            onClick={() => handleUpdateQuantity(product.productId._id, 'decrease')}
+                            onClick={() => handleUpdateQuantity(product?.productId?._id, 'decrease')}
                             className="p-1.5 hover:text-pink-600 disabled:opacity-30"
-                            disabled={product.quantity <= 1}
+                            disabled={product?.quantity <= 1}
                           >
                             <Minus size={14} />
                           </button>
-                          <span className='w-8 text-center text-xs font-bold text-gray-700'>{product.quantity}</span>
+                          <span className='w-8 text-center text-xs font-bold text-gray-700'>{product?.quantity}</span>
                           <button
-                            onClick={() => handleUpdateQuantity(product.productId._id, 'increase')}
+                            onClick={() => handleUpdateQuantity(product?.productId._id, 'increase')}
                             className="p-1.5 hover:text-pink-600"
                           >
                             <Plus size={14} />
                           </button>
                         </div>
                         <p className='text-sm font-black text-gray-900'>
-                          ₹{(product.productId.productPrice * product.quantity).toLocaleString('en-IN')}
+                          ₹{(product?.productId?.productPrice * product?.quantity).toLocaleString('en-IN')}
                         </p>
                       </div>
                     </div>
@@ -194,17 +194,31 @@ export default function Cart() {
           </div>
         </div>
       ) : (
-        <div className='flex flex-col items-center justify-center min-h-[70vh] text-center'>
-          <div className='mb-6 bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-50'>
-            <ShoppingBag size={40} className='text-gray-200' strokeWidth={1} />
+        <div>
+          <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-4 border-b border-gray-100 pb-8">
+            <div className="text-center md:text-left">
+              <h1 className="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3 justify-center md:justify-start">
+                My Cart <span className="bg-rose-100 text-rose-600 text-xs px-3 py-1 rounded-full font-bold">{cart?.items?.length || 0}</span>
+              </h1>
+              <p className="text-gray-500 text-sm mt-1">Items you've saved for purchase.</p>
+            </div>
+            <Button asChild variant="outline" className="rounded-full border-gray-200 px-8 hover:bg-black hover:text-white transition-all">
+              <Link to="/products">Browse More</Link>
+            </Button>
           </div>
-          <h2 className='text-xl font-black text-gray-900 tracking-tight'>Empty Cart</h2>
-          <p className='text-[12px] text-gray-400 mt-2 mb-6 max-w-[200px] font-medium'>
-            Your boutique tray is waiting for items.
-          </p>
-          <Button asChild className="bg-pink-600 hover:bg-black text-[11px] font-black uppercase tracking-widest rounded-full px-8 h-11">
-            <Link to="/products">Browse Collection</Link>
-          </Button>
+
+          <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[40px] shadow-sm border border-gray-50">
+            <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mb-4">
+              <ShoppingCart size={28} className="text-rose-400 fill-rose-100" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900">Your Cart is empty</h2>
+            <p className="text-gray-400 text-sm mt-2 mb-8">Your Cart tray is waiting for items.</p>
+            <Link to="/products">
+              <Button className="bg-black text-white rounded-full px-10 py-6 hover:bg-rose-600 transition-all">
+                Browse Collection
+              </Button>
+            </Link>
+          </div>
         </div>
       )}
     </div>

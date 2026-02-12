@@ -29,6 +29,7 @@ import AdminOrders from "./pages/Admin/AdminOrders";
 import ShowUserOrders from "./pages/Admin/ShowUserOrders";
 import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminOrderDetails from "./pages/Admin/AdminOrderDetails"
+import Notification from "./components/Notification";
 
 export default function App() {
   return (
@@ -45,9 +46,11 @@ export default function App() {
         <Route path="/products/:id" element={<><Navbar /><SingleProducts /></>} />
         <Route path="/cart" element={<ProtectedRoute><Navbar /><Cart /></ProtectedRoute>} />
         <Route path="/wishlist" element={<ProtectedRoute><Navbar /><Wishlist /></ProtectedRoute>} />
-        <Route path="/address" element={<ProtectedRoute><Navbar/><AddressForm /></ProtectedRoute>} />
-        <Route path="/orders" element={<ProtectedRoute><Navbar/><OrderDetails /></ProtectedRoute>} />
+        <Route path="/address" element={<ProtectedRoute><Navbar /><AddressForm /></ProtectedRoute>} />
+        <Route path="/orders" element={<ProtectedRoute><Navbar /><OrderDetails /></ProtectedRoute>} />
         <Route path="/ordersuccess/:id" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
+        <Route path="/notification" element={<ProtectedRoute adminOnly={true}><Navbar/><Notification /></ProtectedRoute>} />
+
 
 
         {/* Admin Dashboard */}
@@ -58,8 +61,8 @@ export default function App() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="users/orders/:userId" element={<ShowUserOrders />} />
           <Route path="users" element={<AdminUsers />} />
-<Route path="order-details/:orderId" element={<AdminOrderDetails />} />  
-      </Route>
+          <Route path="order-details/:orderId" element={<AdminOrderDetails />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
