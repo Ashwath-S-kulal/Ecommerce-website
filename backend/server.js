@@ -16,10 +16,14 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://ecommerce-website-wysr.vercel.app/',
   credentials: true,
 }
 ));
+
+app.get("/", (req, res) => {
+  res.send("Backend running");
+});
 
 app.use("/api/user", userRoute);
 app.use("/api/product", productRoute);
