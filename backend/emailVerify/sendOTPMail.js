@@ -53,19 +53,20 @@
 //   });
 // };
 
-import { Resend } from 'resend';
+import { Resend } from "resend";
 
 // Use the Edge runtime for the fastest possible execution on Vercel
-export const runtime = 'edge'; 
+export const runtime = "edge";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendOTPMail = async (otp, email) => {
   try {
     const { data, error } = await resend.emails.send({
-      // FIXED: Must include a valid email address. 
+      // FIXED: Must include a valid email address.
       // Use 'onboarding@resend.dev' until you verify your own domain.
-      from: 'Sanjeevini Group <onboarding@resend.dev>', 
+      // Ensure process.env.MAIL_USER is something like 'info@sanjeevinigroup.com'
+      from: `Sanjeevini Group Avarse <${process.env.MAIL_USER}>`,
       to: email,
       subject: `Verification Code: ${otp} - Sanjeevini Group`,
       html: `
