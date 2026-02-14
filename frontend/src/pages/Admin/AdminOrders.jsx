@@ -163,7 +163,7 @@ export default function ShowUserOrders() {
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-[32px] overflow-hidden shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader className="bg-slate-50/50">

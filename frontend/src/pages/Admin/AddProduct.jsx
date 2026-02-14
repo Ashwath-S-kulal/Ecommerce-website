@@ -81,27 +81,24 @@ const AddProduct = () => {
   return (
     <div className='min-h-screen bg-slate-50/50 pb-20'>
       {/* --- HEADER BANNER (Per Screenshot) --- */}
-      <div className='bg-[#E91E63] pt-12 pb-24 px-8 flex justify-between items-start'>
+      <div className='bg-[#E91E63] pt-12 pb-24 px-8 flex justify-between items-start rounded-xl'>
         <div>
-          <h1 className='text-3xl font-black text-white tracking-tight'>Create New Listing</h1>
+          <h1 className='text-3xl font-black text-white tracking-tight'>Add a new Products</h1>
           <p className='text-pink-100 mt-1 opacity-90'>Fill in the information below to add a new product to your store.</p>
         </div>
-        <div className='bg-white/20 p-3 rounded-2xl backdrop-blur-md border border-white/30'>
+        <div className='bg-white/20 p-3 rounded-xl backdrop-blur-md border border-white/30'>
           <PackagePlus className='text-white' size={28} />
         </div>
       </div>
 
       {/* --- FORM CONTAINER --- */}
       <div className='container mx-auto px-4 -mt-16'>
-        <div className='max-w-4xl mx-auto bg-white rounded-[32px] shadow-2xl shadow-pink-100/50 border border-slate-100 overflow-hidden'>
+        <div className='max-w-4xl mx-auto bg-white rounded-xl shadow-2xl shadow-pink-100/50 border border-slate-100 overflow-hidden'>
           
           <div className='p-8 md:p-12 space-y-10'>
             
             {/* --- SECTION 1: GENERAL INFO --- */}
             <section className='space-y-6'>
-              <div className='flex items-center gap-2 text-[#E91E63] font-bold text-xs uppercase tracking-[0.2em] mb-4'>
-                <Info size={14} /> Product Identification
-              </div>
               <h2 className='text-2xl font-black text-slate-800 border-b border-slate-50 pb-4'>General Information</h2>
               
               <div className='grid md:grid-cols-2 gap-6'>
@@ -184,7 +181,7 @@ const AddProduct = () => {
               <Button 
                 disabled={loading} 
                 onClick={submitHandler}
-                className="w-full h-16 bg-[#E91E63] hover:bg-[#D81B60] text-white rounded-2xl text-lg font-black shadow-xl shadow-pink-200 transition-all active:scale-[0.98] flex gap-3 items-center justify-center" 
+                className="w-full h-12 cursor-pointer bg-[#E91E63] hover:bg-[#D81B60] text-white rounded-sm text-lg font-black shadow-xl shadow-pink-200 transition-all active:scale-[0.98] flex gap-3 items-center justify-center" 
                 type="submit"
               >
                 {loading ? (

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard,
   PlusCircle,
@@ -7,168 +7,137 @@ import {
   ShoppingBag,
   LogOut,
   PackageSearch,
-  Bell,
-  Settings,
-  ChevronRight,
-  Menu,
-  X
+  ArrowRight,
+  ChevronLeft,
+  TrendingUp,
+  Sparkles
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import AdminSales from './Admin/AdminSales';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [open, setOpen] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem('accessToken');
-    navigate('/login');
-  };
 
-  const SidebarContent = () => (
-    <div className="flex flex-col h-full overflow-hidden ">
-      <div className="p-8 pb-4">
-        <div className="flex items-center gap-2 mb-1">
-          <div className="w-2 h-2 rounded-full bg-pink-600 animate-pulse" />
-          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Control Hub</span>
-        </div>
-        <h1 className="text-2xl font-black text-slate-900 tracking-tighter">
-          Sanjeevini <span className="text-pink-600 font-serif italic">Admin.</span>
-        </h1>
-      </div>
 
-      <Separator className="mx-8 w-auto opacity-50" />
+  const navItems = [
+    { label: "Products", description: "Product catalog", to: "/dashboard/products", icon: <PackageSearch size={20} />, status: "124 Items", color: "bg-blue-500" },
+    { label: "Add Product", description: "New listing", to: "/dashboard/add-product", icon: <PlusCircle size={20} />, status: "Live", color: "bg-pink-500" },
+    { label: "Orders", description: "Live tracking", to: "/dashboard/orders", icon: <ShoppingBag size={20} />, status: "12 New", color: "bg-orange-500" },
+    { label: " Users", description: "Group members", to: "/dashboard/users", icon: <Users size={20} />, status: "52 Active", color: "bg-indigo-500" },
+  ];
 
-      <nav className="flex-1 px-4 py-8 space-y-1 overflow-y-auto custom-scrollbar">
-        <SidebarItem
-          icon={<LayoutDashboard size={18} />}
-          label="Our Sales"
-          to="/dashboard/sales"
-          active={location.pathname === "/dashboard/sales"}
-          onClick={() => setOpen(false)}
-        />
-        <SidebarItem
-          icon={<PlusCircle size={18} />}
-          label="Add Product"
-          to="/dashboard/add-product"
-          active={location.pathname === "/dashboard/add-product"}
-          onClick={() => setOpen(false)}
-        />
-        <SidebarItem
-          icon={<PackageSearch size={18} />}
-          label="All Products"
-          to="/dashboard/products"
-          active={location.pathname === "/dashboard/products"}
-          onClick={() => setOpen(false)}
-        />
-        <SidebarItem
-          icon={<Users size={18} />}
-          label="All Users"
-          to="/dashboard/users"
-          active={location.pathname === "/dashboard/users"}
-          onClick={() => setOpen(false)}
-        />
-        <SidebarItem
-          icon={<ShoppingBag size={18} />}
-          label="Orders"
-          to="/dashboard/orders"
-          active={location.pathname === "/dashboard/orders"}
-          onClick={() => setOpen(false)}
-        />
-      </nav>
-
-      <div className="p-6 mt-auto hidden md:block">
-        <div className="bg-slate-50 rounded-3xl p-4 mb-4">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Signed in as</p>
-          <p className="text-xs font-black text-slate-800 truncate">Administrator</p>
-        </div>
-        <Button
-          variant="ghost"
-          className="w-full justify-start rounded-2xl text-red-500 hover:text-red-600 hover:bg-red-50 transition-all group"
-          onClick={handleLogout}
-        >
-          <LogOut className="mr-3 group-hover:rotate-12 transition-transform" size={18} />
-          <span className="font-bold text-sm">Sign Out</span>
-        </Button>
-      </div>
-    </div>
-  );
+  const isRoot = location.pathname === "/dashboard" || location.pathname === "/dashboard/";
 
   return (
-    <div className="flex min-h-screen bg-[#FDFCFD] mt-15 md:mt-12 mx-0 ">
-      <div className="lg:hidden">
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetContent side="left" className="pt-10 p-0 w-72 border-none bg-transparent shadow-none">
-            <div className="h-[calc(100vh-20px)] m-2 h-fit mt-20 bg-white border border-slate-100 rounded-[40px] shadow-2xl overflow-hidden">
-              <SidebarContent />
-            </div>
-          </SheetContent>
-        </Sheet>
-      </div>
-      <aside className="hidden lg:flex w-72 p-6 sticky top-0 h-screen flex-col">
-        <div className="bg-white border border-slate-100 rounded-[40px] h-full shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden">
-          <SidebarContent />
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-indigo-100 selection:text-indigo-700 mt-10">
+      
+      <main className="pt-12 pb-20 px-4 md:px-10 lg:px-20 max-w-[1400px] mx-auto space-y-8">
+        
+        {/* 1. TOP NAV CARDS (Visible on every page) */}
+        <div className="animate-in fade-in slide-in-from-top-4 duration-700">
+          <div className="flex items-center gap-4 mb-6">
+             {!isRoot && (
+                <button 
+                  onClick={() => navigate('/dashboard')} 
+                  className="p-2 bg-white border border-slate-200 rounded-full hover:bg-slate-50 transition-colors shadow-sm"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+             )}
+             <div>
+                <h1 className="text-xl font-bold tracking-tight">Admin Dashboard</h1>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sanjeevini Command Center</p>
+             </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            {navItems.map((item) => (
+              <div
+                key={item.to}
+                onClick={() => navigate(item.to)}
+                className={`group relative bg-white border rounded-2xl p-4 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex items-center gap-4 ${
+                  location.pathname === item.to ? 'border-indigo-500 ring-2 ring-indigo-500/10' : 'border-slate-200/60'
+                }`}
+              >
+                <div className={`shrink-0 w-12 h-12 rounded-xl ${item.color} text-white flex items-center justify-center shadow-lg shadow-inherit/30 group-hover:rotate-6 transition-transform`}>
+                  {item.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-bold text-slate-900 leading-none">{item.label}</h3>
+                  <p className="text-[11px] text-slate-400 mt-1 font-medium truncate">{item.description}</p>
+                </div>
+                <ArrowRight size={16} className={`text-slate-300 group-hover:text-indigo-500 transition-all ${location.pathname === item.to ? 'text-indigo-500 translate-x-1' : ''}`} />
+              </div>
+            ))}
+          </div>
         </div>
-      </aside>
 
-      <main className="flex-1 flex flex-col min-w-0 px-1 lg:pr-6 lg:pl-0 py-6">
-
-        <header className="h-20 bg-white border border-slate-100 rounded-[25px] lg:rounded-[30px] shadow-sm mb-6 px-4 lg:px-8 flex items-center justify-between">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden rounded-xl bg-slate-50"
-            onClick={() => setOpen(true)}
-          >
-            <Menu size={20} className="text-slate-600" />
-          </Button>
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-bold text-slate-400 capitalize whitespace-nowrap">
-              {location.pathname.split('/').pop()?.replace('-', ' ') || 'Overview'}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 lg:gap-4">
-            <div className="h-8 w-px bg-slate-100 mx-1 lg:mx-2" />
-            <div className="flex items-center gap-3 lg:pl-2">
-              <div className="text-right hidden sm:block">
-                <p className="text-xs font-black text-slate-800 leading-none">Avarse</p>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Admin</p>
+        {/* 2. DYNAMIC CONTENT AREA */}
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+          {isRoot ? (
+            <div className="space-y-10">
+              {/* Show Analytics only on root */}
+              <div className="rounded-3xl overflow-hidden border border-slate-200/60 shadow-sm bg-white">
+                <AdminSales />
               </div>
-              <div className="h-10 w-10 rounded-xl lg:rounded-2xl bg-gradient-to-tr from-pink-600 to-rose-400 flex items-center justify-center text-white font-black shadow-lg shadow-pink-100 flex-shrink-0">
-                A
+
+              {/* MODERN BENTO SECTION */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div className="lg:col-span-5 bg-[#0F172A] rounded-3xl p-8 text-white relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 blur-[80px] rounded-full -mr-20 -mt-20" />
+                  <div className="relative z-10 flex flex-col h-full justify-between">
+                    <div>
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-indigo-300 text-[10px] font-bold uppercase tracking-widest mb-6 border border-white/5">
+                        <Sparkles size={12} /> Monthly Growth
+                      </div>
+                      <h2 className="text-3xl font-bold leading-tight">
+                        Community impact <br /> has grown by <span className="text-indigo-400 text-4xl underline decoration-indigo-400/30 underline-offset-8">24%</span>
+                      </h2>
+                    </div>
+                    <p className="text-slate-400 text-sm mt-8 max-w-xs font-medium">
+                      Artisans in the Sanjeevini collective have shipped 1,200+ units this month.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-7 bg-white border border-slate-200/60 rounded-3xl p-8 shadow-sm">
+                  <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-lg font-bold text-slate-900">System Actions</h3>
+                    <div className="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                      <LayoutDashboard size={20} />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <QuickActionButton label="Export Sales Data" sub="CSV Format" icon={<TrendingUp size={16} />} />
+                    <QuickActionButton label="Artisan Directory" sub="Manage Members" icon={<Users size={16} />} />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </header>
-        <div className="flex-1 rounded-[25px] lg:rounded-[30px]">
-          <Outlet />
+          ) : (
+            /* Show Sub-pages when clicking a card */
+            <div className="bg-white border border-slate-200/60 rounded-xl shadow-xl shadow-slate-200/50  min-h-[60vh]">
+              <Outlet />
+            </div>
+          )}
         </div>
       </main>
     </div>
   );
 };
 
-const SidebarItem = ({ icon, label, to, active, onClick }) => (
-  <Link to={to} onClick={onClick}>
-    <Button
-      variant="ghost"
-      className={`w-full justify-between py-6 rounded-2xl transition-all duration-300 group mb-2 ${active
-        ? "bg-pink-500 text-white shadow-lg shadow-pink-100 hover:bg-pink-600 hover:text-white"
-        : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-        }`}
-    >
-      <div className="flex items-center gap-4">
-        <span className={`${active ? "text-white" : "text-slate-400 group-hover:text-pink-600"} transition-colors`}>
-          {icon}
-        </span>
-        <span className="font-black text-[13px] tracking-tight">{label}</span>
-      </div>
-      {active && <ChevronRight size={14} className="opacity-50" />}
-    </Button>
-  </Link>
+const QuickActionButton = ({ label, sub, icon }) => (
+  <button className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-transparent hover:border-indigo-200 hover:bg-white hover:shadow-xl hover:shadow-indigo-500/5 transition-all text-left group">
+    <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-600 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-colors">
+      {icon}
+    </div>
+    <div>
+      <p className="text-xs font-bold text-slate-900">{label}</p>
+      <p className="text-[10px] text-slate-400 font-medium">{sub}</p>
+    </div>
+  </button>
 );
 
 export default AdminLayout;

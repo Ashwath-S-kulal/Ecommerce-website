@@ -108,9 +108,9 @@ export default function AdminProduct() {
             <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
         <div>
           <h1 className='text-3xl font-black text-slate-900 tracking-tighter flex items-center gap-2'>
-            <Package className='text-pink-600' size={28} /> Inventory <span className="font-serif italic font-normal text-pink-500">Vault</span>
+            <Package className='text-pink-600' size={28} /> Sanjeevini <span className="font-serif italic font-normal text-pink-500">Products</span>
           </h1>
-          <p className="text-xs text-slate-400 font-medium ml-9">Manage your boutique product catalog</p>
+          <p className="text-xs text-slate-400 font-medium ml-9">Manage your sanjeevini product catalog</p>
         </div>
         
         <div className='flex items-center gap-3'>
@@ -140,7 +140,7 @@ export default function AdminProduct() {
         </div>
       </div>
 
-      <Card className='border-none shadow-xl shadow-slate-200/50 rounded-[32px] overflow-hidden'>
+      <Card className='border-none shadow-xl shadow-slate-200/50 rounded-xl overflow-hidden'>
         <div className="overflow-x-auto">
           <table className='w-full text-left border-collapse'>
             <thead>
@@ -178,6 +178,7 @@ export default function AdminProduct() {
                     </td>
                     <td className='px-8 py-5 font-black text-slate-900'>₹{product?.productPrice.toLocaleString('en-IN')}</td>
                     <td className='px-8 py-5 text-right'>
+
                       <div className='flex justify-end gap-2'>
                         <Dialog open={open && editProduct?._id === product._id} onOpenChange={setOpen}>
                           <DialogTrigger asChild>
@@ -185,7 +186,7 @@ export default function AdminProduct() {
                               <Edit size={18} />
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="sm:max-w-[800px] mt-8  rounded-[40px] p-0 border-none shadow-2xl overflow-hidden bg-white">
+                          <DialogContent className="sm:max-w-[800px] mt-8  rounded-sm p-0 border-none shadow-2xl overflow-hidden bg-white">
                             <div className="bg-slate-900 p-8 text-white relative">
                               <DialogHeader>
                                 <div className="flex items-center gap-3 mb-2">
@@ -205,7 +206,7 @@ export default function AdminProduct() {
                                 <Label className='text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-2'>
                                   <Info size={12}/> Product Name
                                 </Label>
-                                <Input name="productName" value={editProduct?.productName} onChange={handleChange} className='rounded-2xl h-12 border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-medium' />
+                                <Input name="productName" value={editProduct?.productName} onChange={handleChange} className='rounded-sm h-12 border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-medium' />
                               </div>
 
                               <div className='grid grid-cols-2 gap-6'>
@@ -213,13 +214,13 @@ export default function AdminProduct() {
                                   <Label className='text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-2'>
                                     <IndianRupee size={12}/> Price
                                   </Label>
-                                  <Input type="number" name="productPrice" value={editProduct?.productPrice} onChange={handleChange} className='rounded-2xl h-12 border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-bold text-pink-600' />
+                                  <Input type="number" name="productPrice" value={editProduct?.productPrice} onChange={handleChange} className='rounded-sm h-12 border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-bold text-pink-600' />
                                 </div>
                                 <div className='space-y-2'>
                                   <Label className='text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-2'>
                                     <Tag size={12}/> Category
                                   </Label>
-                                  <Input name="category" value={editProduct?.category} onChange={handleChange} className='rounded-2xl h-12 border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-medium' />
+                                  <Input name="category" value={editProduct?.category} onChange={handleChange} className='rounded-sm h-12 border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-medium' />
                                 </div>
                               </div>
 
@@ -227,7 +228,7 @@ export default function AdminProduct() {
                                 <Label className='text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-2'>
                                   <LayoutGrid size={12}/> Description
                                 </Label>
-                                <Textarea name='productDesc' value={editProduct?.productDesc} onChange={handleChange} className='rounded-2xl min-h-32 border-slate-100 bg-slate-50/50 focus:bg-white transition-all leading-relaxed' />
+                                <Textarea name='productDesc' value={editProduct?.productDesc} onChange={handleChange} className='rounded-sm min-h-32 border-slate-100 bg-slate-50/50 focus:bg-white transition-all leading-relaxed' />
                               </div>
 
                               <div className="bg-slate-50 p-6 rounded-[32px] border border-dashed border-slate-200">
@@ -237,9 +238,9 @@ export default function AdminProduct() {
 
                             <DialogFooter className='p-8 pt-0 pb-4 bg-slate-50/50 border-t border-slate-100 flex items-center gap-3'>
                               <DialogClose asChild>
-                                <Button variant="ghost" className='rounded-2xl px-6 font-bold text-slate-400 hover:text-slate-600'>Cancel</Button>
+                                <Button variant="ghost" className='rounded-sm px-6 font-bold text-slate-400 hover:text-slate-600'>Cancel</Button>
                               </DialogClose>
-                              <Button onClick={handleSave} disabled={isUpdating} className='bg-pink-600 hover:bg-pink-700 text-white rounded-2xl px-10 h-12 font-bold shadow-lg shadow-pink-200 transition-all hover:scale-105 active:scale-95'>
+                              <Button onClick={handleSave} disabled={isUpdating} className='bg-pink-600 hover:bg-pink-700 text-white rounded-sm px-10 h-12 font-bold shadow-lg shadow-pink-200 transition-all hover:scale-105 active:scale-95'>
                                 {isUpdating ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating...</> : "Save Changes"}
                               </Button>
                             </DialogFooter>
