@@ -53,18 +53,19 @@
 //   });
 // };
 
-
 import { Resend } from 'resend';
 
-// Initialize Resend with your API Key
+// Use the Edge runtime for the fastest possible execution on Vercel
+export const runtime = 'edge'; 
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendOTPMail = async (otp, email) => {
   try {
     const { data, error } = await resend.emails.send({
-      // IMPORTANT: If your domain is not verified, this MUST be 'onboarding@resend.dev'
-      // If you have verified sanjeevinigroup.com, change it to 'info@sanjeevinigroup.com'
-      from: 'Sanjeevini Group Avarse', 
+      // FIXED: Must include a valid email address. 
+      // Use 'onboarding@resend.dev' until you verify your own domain.
+      from: 'Sanjeevini Group <onboarding@resend.dev>', 
       to: email,
       subject: `Verification Code: ${otp} - Sanjeevini Group`,
       html: `
@@ -74,40 +75,25 @@ export const sendOTPMail = async (otp, email) => {
             </div>
             <div style="padding: 30px; background-color: #ffffff; color: #333333;">
                 <h2 style="color: #1a1a1a;">Verify Your Account</h2>
-                <p style="font-size: 16px; line-height: 1.6;">Hello,</p>
-                <p style="font-size: 16px; line-height: 1.6;">
-                    You are receiving this email because a request was made for a verification code. Please use the following One-Time Password (OTP) to proceed:
-                </p>
                 <div style="text-align: center; margin: 30px 0;">
                     <span style="display: inline-block; padding: 15px 30px; background-color: #fdf2f8; color: #db2777; font-size: 32px; font-weight: bold; letter-spacing: 5px; border: 2px dashed #db2777; border-radius: 8px;">
                         ${otp}
                     </span>
                 </div>
-                <p style="font-size: 14px; color: #666666; text-align: center;">
-                    This code is valid for <b>10 minutes</b>. For your security, please do not share this code.
-                </p>
-                <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
-                <p style="font-size: 12px; color: #999999; text-align: center; line-height: 1.4;">
-                    If you did not request this code, you can safely ignore this email.
-                </p>
-            </div>
-            <div style="background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #999999;">
-                © 2026 Sanjeevini Group Avarse. All rights reserved.
             </div>
         </div>
       `,
     });
 
     if (error) {
-      console.error("Resend API rejection:", error);
+      // This will show you EXACTLY why Resend is saying no in your Vercel logs
+      console.error("Resend Error Details:", JSON.stringify(error));
       return { success: false, error };
     }
 
-    console.log("Email sent successfully! ID:", data.id);
     return { success: true, id: data.id };
-
   } catch (err) {
-    console.error("Critical error in sendOTPMail:", err);
+    console.error("Vercel Function Crash:", err);
     return { success: false, error: err.message };
   }
 };
