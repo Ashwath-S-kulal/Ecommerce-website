@@ -3,7 +3,8 @@ import axios from 'axios';
 import { Bell, Clock, MapPin, ArrowRight, CheckCircle2, Calendar, ShoppingBag, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { markAllNotificationsRead, markSingleRead, setNotifications } from '@/redux/productSlice';
+import {  markSingleRead, setNotifications } from '@/redux/productSlice';
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Notifications() {
     const { notifications } = useSelector((state) => state.product);
@@ -31,32 +32,20 @@ export default function Notifications() {
     const handleRead = async (id, orderId) => {
         dispatch(markSingleRead(id));
         try {
-            await axios.post(`${import.meta.env.VITE_BASE_URI}/api/notification/read/${id}`, {}, { 
-                headers: { Authorization: `Bearer ${accessToken}` } 
+            await axios.post(`${import.meta.env.VITE_BASE_URI}/api/notification/read/${id}`, {}, {
+                headers: { Authorization: `Bearer ${accessToken}` }
             });
-        } catch (err) { 
-            console.error("Backend update failed", err); 
+        } catch (err) {
+            console.error("Backend update failed", err);
         }
-        
+
         if (orderId) {
             navigate(`/dashboard/order-details/${orderId}`);
         }
     };
 
-    const handleMarkAllAsRead = async () => {
-        dispatch(markAllNotificationsRead());
-        try {
-            await axios.post(`${import.meta.env.VITE_BASE_URI}/api/notification/allread`, {}, {
-                headers: { Authorization: `Bearer ${accessToken}` }
-            });
-        } catch (err) {
-            console.error("Error marking all read", err);
-            fetchNotifications(); 
-        }
-    };
-
-    useEffect(() => { 
-        fetchNotifications(); 
+    useEffect(() => {
+        fetchNotifications();
     }, []);
 
     const groupedNotifications = useMemo(() => {
@@ -83,23 +72,19 @@ export default function Notifications() {
         return (
             <div className="pt-24 pb-20 bg-[#FBFBFC] min-h-screen px-4">
                 <div className="max-w-2xl mx-auto space-y-8">
-                    <div className="flex justify-between items-end px-2">
+                    <div className="flex justify-between items-center px-2">
                         <div className="space-y-2">
                             <div className="h-8 w-32 bg-zinc-200 animate-pulse rounded-lg" />
-                            <div className="h-4 w-48 bg-zinc-100 animate-pulse rounded-md" />
+                            <div className="h-4 w-40 bg-zinc-100 animate-pulse rounded-md" />
                         </div>
                         <div className="w-10 h-10 bg-zinc-100 animate-pulse rounded-full" />
                     </div>
                     {[1, 2].map((group) => (
                         <div key={group} className="space-y-4">
-                            <div className="flex items-center gap-3 justify-center">
-                                <div className="h-[1px] w-20 bg-zinc-100" />
-                                <div className="h-3 w-24 bg-zinc-100 animate-pulse rounded-full" />
-                                <div className="h-[1px] w-20 bg-zinc-100" />
-                            </div>
+                            <div className="h-3 w-24 mx-auto bg-zinc-100 animate-pulse rounded-full" />
                             {[1, 2].map((item) => (
                                 <div key={item} className="bg-white rounded-[24px] p-4 border border-zinc-50 flex items-center gap-4">
-                                    <div className="w-14 h-14 bg-zinc-100 animate-pulse rounded-[18px]" />
+                                    <div className="w-12 h-12 md:w-14 md:h-14 bg-zinc-100 animate-pulse rounded-xl md:rounded-[18px]" />
                                     <div className="flex-1 space-y-2">
                                         <div className="h-4 w-3/4 bg-zinc-100 animate-pulse rounded" />
                                         <div className="h-3 w-1/2 bg-zinc-50 animate-pulse rounded" />
@@ -116,46 +101,39 @@ export default function Notifications() {
     const unreadCount = notifications ? notifications.filter(n => !n.isRead).length : 0;
 
     return (
-        <div className="pt-24 pb-20 bg-[#FBFBFC] min-h-screen px-4">
+        <div className="pt-20 md:pt-24 pb-20 bg-[#FBFBFC] min-h-screen px-4 md:px-6">
             <div className="max-w-2xl mx-auto">
-                <div className="flex items-end justify-between mb-10 px-2">
-                    <div>
-                        <div className="flex items-center gap-2 mb-1">
-                            <CheckCircle2 size={16} className="text-zinc-900" />
-                            <h1 className="text-2xl font-semibold text-zinc-900 tracking-tight">Activity</h1>
+                <div className="flex items-center justify-between mb-8 md:mb-12 px-2">
+                    <div className="flex flex-col">
+                        <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 tracking-tight">
+                            Notifications
+                        </h1>
+                        <div className="flex items-center gap-1.5 mt-1">
+                            <div className={`w-1.5 h-1.5 rounded-full ${unreadCount > 0 ? 'bg-blue-600 animate-pulse' : 'bg-zinc-300'}`} />
+                            <p className="text-zinc-500 text-[11px] md:text-xs font-medium uppercase tracking-wider">
+                                {unreadCount} New updates
+                            </p>
                         </div>
-                        <p className="text-zinc-400 text-sm font-medium">
-                            You have <span className="text-zinc-900 font-bold">{unreadCount} unread</span> updates
-                        </p>
                     </div>
-                    <div className="relative flex gap-5 items-center">
-                        <div>
+
+                    <div className="flex items-center gap-3 md:gap-4">
+                        <div className="relative p-2 bg-white rounded-2xl border border-zinc-100 shadow-sm">
+                            <Bell className="text-zinc-400" size={20} />
                             {unreadCount > 0 && (
-                                <button 
-                                    onClick={handleMarkAllAsRead}
-                                    className="flex items-center gap-1.5 px-3 py-1 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 hover:text-zinc-900 rounded-full transition-all duration-200 group"
-                                >
-                                    <Check size={12} className="group-hover:scale-110 transition-transform" />
-                                    <span className="text-[10px] cursor-pointer font-black uppercase tracking-wider">Mark all read</span>
-                                </button>
-                            )}
-                        </div>
-                        <div className="relative">
-                            <Bell className="text-zinc-300 transition-colors" size={28} />
-                            {unreadCount > 0 && (
-                                <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-blue-600 rounded-full border-2 border-[#FBFBFC]" />
+                                <span className="absolute top-2 right-2 w-2 h-2 bg-blue-600 rounded-full border-2 border-white" />
                             )}
                         </div>
                     </div>
                 </div>
 
                 {Object.keys(groupedNotifications).length > 0 ? (
-                    <div className="space-y-10">
+                    <div className="space-y-8 md:space-y-10">
                         {Object.entries(groupedNotifications).map(([date, items]) => (
                             <div key={date} className="space-y-4">
+                                {/* Date Divider */}
                                 <div className="flex items-center gap-3 px-2">
                                     <div className="h-[1px] flex-1 bg-zinc-100"></div>
-                                    <span className="text-[10px] font-black text-zinc-300 uppercase tracking-[0.2em] flex items-center gap-2">
+                                    <span className="text-[9px] md:text-[10px] font-black text-zinc-300 uppercase tracking-[0.2em] flex items-center gap-2">
                                         <Calendar size={12} /> {date}
                                     </span>
                                     <div className="h-[1px] flex-1 bg-zinc-100"></div>
@@ -166,51 +144,49 @@ export default function Notifications() {
                                         const order = n.orderId;
                                         const product = order?.products?.[0]?.productId;
                                         return (
-                                            <div 
-                                                key={n._id} 
+                                            <div
+                                                key={n._id}
                                                 onClick={() => handleRead(n._id, order?._id)}
-                                                className={`group relative bg-white rounded-[24px] p-4 border transition-all duration-300 cursor-pointer flex items-center gap-4 ${
-                                                    n.isRead 
-                                                    ? "border-transparent opacity-60 grayscale-[0.4]" 
-                                                    : "border-zinc-100 shadow-[0_8px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_15px_35px_rgba(0,0,0,0.05)] scale-[1.01]"
-                                                }`}
+                                                className={`group relative bg-white rounded-[20px] md:rounded-[24px] p-3 md:p-4 border transition-all duration-300 cursor-pointer flex items-center gap-3 md:gap-4 ${n.isRead
+                                                        ? "border-transparent opacity-70 grayscale-[0.4]"
+                                                        : "border-zinc-100 shadow-sm hover:shadow-md md:scale-[1.01]"
+                                                    }`}
                                             >
                                                 <div className="relative shrink-0">
-                                                    <img 
-                                                        src={product?.productImg?.[0]?.url || 'https://placehold.co/100'} 
-                                                        className={`w-14 h-14 rounded-[18px] object-cover bg-zinc-50 ${!n.isRead ? "ring-2 ring-blue-50 ring-offset-2" : ""}`}
+                                                    <img
+                                                        src={product?.productImg?.[0]?.url || 'https://placehold.co/100'}
+                                                        className={`w-12 h-12 md:w-14 md:h-14 rounded-lg md:rounded-[18px] object-cover bg-zinc-50 ${!n.isRead ? "ring-2 ring-blue-50 ring-offset-1" : ""}`}
                                                         alt="prod"
                                                     />
                                                     {!n.isRead && (
-                                                        <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-blue-600 rounded-full border-2 border-white shadow-sm flex items-center justify-center">
+                                                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-600 rounded-full border-2 border-white flex items-center justify-center">
                                                             <div className="w-1 h-1 bg-white rounded-full animate-ping" />
                                                         </div>
                                                     )}
                                                 </div>
 
                                                 <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2 mb-1">
+                                                    <div className="flex items-center gap-2 mb-0.5 md:mb-1">
                                                         {!n.isRead && (
-                                                            <span className="bg-blue-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded-[4px] uppercase tracking-tighter">New</span>
+                                                            <span className="bg-blue-600 text-white text-[7px] md:text-[8px] font-black px-1.5 py-0.5 rounded-[4px] uppercase">New</span>
                                                         )}
-                                                        <p className="text-zinc-800 text-[14px] leading-tight truncate">
+                                                        <p className="text-zinc-800 text-[13px] md:text-[14px] leading-snug truncate">
                                                             <span className="font-bold text-zinc-900">{order?.address?.fullName || 'User'}</span>
                                                             <span className="text-zinc-400 font-medium"> ordered </span>
                                                             <span className="font-semibold text-zinc-900">{product?.productName || 'Product'}</span>
                                                         </p>
                                                     </div>
 
-                                                    <div className="flex items-center gap-3 text-[10px] font-bold text-zinc-400 uppercase tracking-tight">
-                                                        <span className="flex items-center gap-1"><Clock size={11} strokeWidth={3} /> {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                                        <span className="flex items-center gap-1"><MapPin size={11} strokeWidth={3} /> {order?.address?.city || 'Location'}</span>
-                                                        <span className={`${n.isRead ? "text-zinc-400" : "text-blue-600"} bg-zinc-50 px-2 py-0.5 rounded-md`}>₹{order?.amount}</span>
+                                                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[9px] md:text-[10px] font-bold text-zinc-400 uppercase">
+                                                        <span className="flex items-center gap-1"><Clock size={10} /> {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                        <span className="flex items-center gap-1"><MapPin size={10} /> {order?.address?.city || 'Location'}</span>
+                                                        <span className={`${n.isRead ? "text-zinc-400" : "text-blue-600 font-black"}`}>₹{order?.amount}</span>
                                                     </div>
                                                 </div>
 
-                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-                                                    n.isRead ? "bg-zinc-50 text-zinc-200" : "bg-zinc-900 text-white group-hover:bg-blue-600"
-                                                }`}>
-                                                    <ArrowRight size={14} />
+                                                <div className={`shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full flex items-center justify-center transition-all duration-300 ${n.isRead ? "bg-zinc-50 text-zinc-300" : "bg-zinc-900 text-white group-hover:bg-blue-600"
+                                                    }`}>
+                                                    <ArrowRight size={12} md:size={14} />
                                                 </div>
                                             </div>
                                         );
@@ -220,12 +196,12 @@ export default function Notifications() {
                         ))}
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[40px] border border-dashed border-zinc-200">
-                        <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mb-4">
-                            <ShoppingBag className="text-zinc-200" size={24} />
+                    <div className="flex flex-col items-center justify-center py-16 md:py-20 bg-white rounded-[30px] md:rounded-[40px] border border-dashed border-zinc-200 mx-2">
+                        <div className="w-14 h-14 md:w-16 md:h-16 bg-zinc-50 rounded-full flex items-center justify-center mb-4">
+                            <ShoppingBag className="text-zinc-200" size={20} md:size={24} />
                         </div>
-                        <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">No Recent Activity</h3>
-                        <p className="text-zinc-300 text-[11px] mt-1">Orders will appear here as they come in.</p>
+                        <h3 className="text-[10px] font-black text-zinc-400 uppercase tracking-widest text-center px-4">No Recent Activity</h3>
+                        <p className="text-zinc-300 text-[11px] mt-1 text-center px-4">Orders will appear here as they come in.</p>
                     </div>
                 )}
             </div>
