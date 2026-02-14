@@ -35,7 +35,5 @@ app.use("/api/order", orderRoute);
 app.use("/api/notification", notificationRoutes);
 app.use("/api/address", addressRoutes);
 
-// 🔥 Connect DB here (not inside listen)
-connectDB();
 
 export default app;

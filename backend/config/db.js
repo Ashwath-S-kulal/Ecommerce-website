@@ -1,16 +1,28 @@
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-dotenv.config();
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 const connectDB = async () => {
-  try {
-    await mongoose.connect(`${process.env.MONGO_URI}/eKart`);
-    console.log('MongoDB connected successfully');
+  if (cached.conn) {
+    return cached.conn;
   }
-  catch (error) {
-    console.error('MongoDB connection failed:', error.message);
+
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(`${process.env.MONGO_URI}/eKart`, {
+        bufferCommands: false,
+      })
+      .then((mongoose) => mongoose);
   }
+
+  cached.conn = await cached.promise;
+  console.log("MongoDB connected successfully");
+
+  return cached.conn;
 };
-        
+
 export default connectDB;
