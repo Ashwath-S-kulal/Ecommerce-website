@@ -133,43 +133,24 @@ import cloudinary from "../utils/cloudinary.js";
 export const register = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
-    
-    // 1. Check existence
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ success: false, message: "User already exists" });
-    }
+    if (existingUser) return res.status(400).json({ success: false, message: "User already exists" });
 
-    // 2. Prepare Data
     const hashedPassword = await bcrypt.hash(password, 10);
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
 
-    // 3. RUN BOTH AT THE SAME TIME (Faster!)
-    // This prevents Vercel from timing out
-    const [newUser, emailResponse] = await Promise.all([
-      User.create({
-        firstName, lastName, email,
-        password: hashedPassword,
-        otp, otpExpiry
-      }),
-      sendOTPMail(otp, email)
-    ]);
-
-    // Check if the email part specifically failed
-    if (emailResponse && emailResponse.success === false) {
-       console.error("Email failed but user was created:", emailResponse.error);
-       // You might want to delete the user here or tell them to click 'Resend'
-    }
-
-    return res.status(201).json({ 
-      success: true, 
-      message: "OTP sent to email. Please check your inbox." 
+    const newUser = await User.create({
+      firstName, lastName, email,
+      password: hashedPassword,
+      otp, otpExpiry
     });
 
+    await sendOTPMail(otp, email, "Verify Your Account");
+
+    res.status(201).json({ success: true, message: "OTP sent to email" });
   } catch (error) {
-    console.error("Registration Error:", error);
-    return res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 export const resendOTP = async (req, res) => {
