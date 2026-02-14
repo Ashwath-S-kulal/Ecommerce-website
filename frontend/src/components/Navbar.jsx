@@ -77,7 +77,7 @@ export default function Navbar() {
                   <Bell size={14} className={unreadCount > 0 ? "text-blue-600" : ""} />
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 text-white text-[9px] flex items-center justify-center rounded-full border-2 border-white font-black">
-                      {unreadCount > 9 ? '9+' : unreadCount}
+                      { unreadCount}
                     </span>
                   )}
                 </NavLink>
@@ -102,7 +102,7 @@ export default function Navbar() {
             {user ? (
               <div className="flex items-center gap-1 md:gap-2 ml-2">
                 <NavLink to={`/profile/${user._id}`} className={({ isActive }) => `w-8 h-8 rounded-full border-2 shrink-0 transition-all ${isActive ? "border-pink-500 scale-110" : "border-transparent"}`}>
-                  <img src={user.profilePic || "https://avatar.vercel.sh/user"} className="w-full h-full rounded-full object-cover" />
+                  <img src={user.profilePic || "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"} className="w-full h-full rounded-full object-cover" />
                 </NavLink>
                 <button onClick={logoutHandler} className="p-2 text-zinc-400 hover:text-red-500 transition-colors">
                   <LogOut size={18} />

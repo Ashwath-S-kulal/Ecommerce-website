@@ -105,7 +105,7 @@ export default function Notifications() {
             <div className="max-w-2xl mx-auto">
                 <div className="flex items-center justify-between mb-8 md:mb-12 px-2">
                     <div className="flex flex-col">
-                        <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 tracking-tight">
+                        <h1 className="text-xl md:text-3xl font-bold text-zinc-900 tracking-tight">
                             Notifications
                         </h1>
                         <div className="flex items-center gap-1.5 mt-1">

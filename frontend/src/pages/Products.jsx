@@ -138,7 +138,7 @@ export default function Products() {
                 <div className='flex items-end justify-between mb-8 px-1'>
                     <div className='flex items-center gap-2'>
                         <div className='w-1 h-6 bg-black rounded-full' />
-                        <h1 className='text-xl md:text-2xl font-black tracking-tight text-gray-900 uppercase'>Products</h1>
+                        <h1 className='text-xl md:text-3xl font-black tracking-tight text-gray-900 '>Products</h1>
                     </div>
                     <p className='text-[10px] font-bold text-gray-400 uppercase tracking-widest'>
                         Page {currentPage} of {totalPages || 1}

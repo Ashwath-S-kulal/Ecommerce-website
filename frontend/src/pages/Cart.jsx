@@ -74,8 +74,8 @@ export default function Cart() {
         <div className='max-w-[1200px] mx-auto'>
           <div className="flex flex-row items-center justify-between mb-6 border-b pb-4 border-gray-200">
             <div>
-              <h1 className='text-2xl md:text-3xl font-black text-gray-900 tracking-tighter'>My Cart</h1>
-              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{cart?.items?.length} Items</p>
+              <h1 className='text-xl md:text-3xl font-black text-gray-900 tracking-tighter'>My Cart</h1>
+              <p className="text-[11px] md:text-sm font-bold text-gray-400 uppercase tracking-widest">{cart?.items?.length} Items</p>
             </div>
             <Link to="/products" className="flex items-center text-[10px] font-bold uppercase tracking-widest text-pink-600 hover:text-pink-700 transition-colors">
               <ArrowLeft className="mr-1 h-3 w-3" />
