@@ -22,9 +22,9 @@ import ScrollToTop from "./components/ScrollToTop";
 import OrderSuccess from "./components/OrderSuccess";
 
 // Admin pages
-import AdminSales from "./pages/admin/AdminSales";
-import AddProduct from "./pages/admin/AddProduct";
-import AdminProducts from "./pages/admin/AdminProducts";
+import AdminSales from "./pages/Admin/AdminSales";
+import AddProduct from "./pages/Admin/AddProduct";
+import AdminProducts from "./pages/Admin/AdminProducts";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminOrderDetails from "./pages/Admin/AdminOrderDetails"
