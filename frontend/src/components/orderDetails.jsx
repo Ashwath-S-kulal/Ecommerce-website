@@ -118,7 +118,7 @@ export default function ShowUserOrders() {
                     orders.map((order) => {
                         const isExpanded = expandedOrders[order._id];
                         return (
-                            <div key={order._id} className="group border-2 border-slate-100 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 bg-white">
+                            <div key={order._id} className="group border-2 border-slate-100 rounded-sm overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 bg-white">
                                 <div className="bg-slate-50/50 px-5 md:px-8 py-4 md:py-5 flex justify-between items-center border-b border-slate-100 gap-2">
                                     <div>
                                         <label className="block text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Ordered on</label>
@@ -145,8 +145,8 @@ export default function ShowUserOrders() {
                                     <div className="lg:col-span-7 space-y-4 md:space-y-6">
                                         {order.products.map((item) => (
                                             <div key={item._id} className="flex items-center gap-4">
-                                                <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-50 rounded-xl flex-shrink-0 overflow-hidden border border-slate-100">
-                                                    <img src={item.productId?.productImg?.[0]?.url || ProductNullImg} alt={item.productId?.productName} className="w-full h-full object-cover" />
+                                                <div className="w-12 h-12 md:w-14 md:h-14 bg-slate-50 rounded-sm flex-shrink-0 overflow-hidden border border-slate-100">
+                                                    <img src={item.productId?.productImg?.[0]?.url || ProductNullImg} alt={item.productId?.productName} className="w-full h-full object-contain" />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <p className="text-[13px] md:text-sm font-bold text-slate-900 truncate">{item.productId?.productName || "Product Doesn't exist"}</p>
@@ -162,7 +162,7 @@ export default function ShowUserOrders() {
                                             <div className="flex justify-between items-end">
                                                 <div className="space-y-1">
                                                     <span className="block text-[8px] md:text-[9px] font-black text-pink-500 uppercase tracking-widest">Grand Total</span>
-                                                    <span className="text-xl md:text-2xl font-black text-slate-900 italic">₹{order.amount?.toLocaleString()}</span>
+                                                    <span className="text-xl md:text-2xl font-black text-slate-900 italic">₹ {order.amount?.toLocaleString()}</span>
                                                 </div>
                                                 <div className="p-2 md:p-2.5 bg-slate-900 rounded-xl text-white">
                                                     <CreditCard size={16} className="md:w-[18px] md:h-[18px]" />
@@ -220,7 +220,7 @@ export default function ShowUserOrders() {
                                             {canCancel(order.createdAt) && (
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
-                                                        <button className="w-full cursor-pointer md:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-white border-2 border-red-100 rounded-xl text-[10px] font-black text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm uppercase tracking-widest active:scale-95">
+                                                        <button className="w-full cursor-pointer md:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-white border-2 border-red-100 rounded-sm text-[10px] font-black text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm uppercase tracking-widest active:scale-95">
                                                             <XCircle size={14} /> Cancel Order
                                                         </button>
                                                     </AlertDialogTrigger>

@@ -85,30 +85,30 @@ export default function Cart() {
 
           <div className='grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8'>
             <div className='lg:col-span-8 space-y-4'>
-              <div className="bg-white p-4 rounded-2xl border border-pink-50 shadow-sm flex flex-col gap-3">
+              <div className="bg-white p-4 rounded-xl border border-pink-50 shadow-sm flex flex-col gap-3">
                 <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider">
                   <span className="flex items-center gap-1.5 text-pink-600">
-                    <Truck size={15} /> 
+                    <Truck size={15} />
                     {subTotal >= freeShippingThreshold ? "Free Shipping Unlocked!" : "Shipping Progress"}
                   </span>
                   <span className="text-gray-400">Target: ₹{freeShippingThreshold}</span>
                 </div>
                 <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                  <div 
-                    className="bg-pink-500 h-full transition-all duration-700 ease-out" 
-                    style={{ width: `${progressToFreeShipping}%` }} 
+                  <div
+                    className="bg-pink-500 h-full transition-all duration-700 ease-out"
+                    style={{ width: `${progressToFreeShipping}%` }}
                   />
                 </div>
               </div>
 
               <div className="space-y-3">
                 {cart?.items.map((product, index) => (
-                  <Card key={index} className="overflow-hidden border-none shadow-sm bg-white rounded-2xl">
+                  <Card key={index} className="overflow-hidden border-none shadow-sm bg-white rounded-sm">
                     <div className='flex p-3 py-0 md:p-4 gap-3 md:gap-5 items-center'>
                       <img
                         src={product?.productId?.productImg?.[0]?.url}
                         alt='img'
-                        className='w-20 h-24 md:w-24 md:h-32 object-cover rounded-xl bg-gray-50 flex-shrink-0'
+                        className='w-20 h-24 md:w-24 md:h-32 object-contain bg-gray-50 flex-shrink-0'
                       />
 
                       <div className='flex-1 min-w-0'>
@@ -117,10 +117,10 @@ export default function Cart() {
                             {product?.productId?.productName}
                           </h2>
                           <p className='text-[12px] md:text-sm font-black text-gray-900 whitespace-nowrap'>
-                             ₹{(product?.productId?.productPrice * product?.quantity).toLocaleString('en-IN')}
+                            ₹{(product?.productId?.productPrice * product?.quantity).toLocaleString('en-IN')}
                           </p>
                         </div>
-                        
+
                         <p className='text-[10px] md:text-[11px] font-semibold text-gray-400 uppercase tracking-tight mb-4'>
                           {product.productId?.category}
                         </p>
@@ -142,8 +142,8 @@ export default function Cart() {
                               <Plus size={14} />
                             </button>
                           </div>
-                          <button 
-                            onClick={() => handleRemove(product?.productId?._id)} 
+                          <button
+                            onClick={() => handleRemove(product?.productId?._id)}
                             className="text-red-500 hover:text-red-600 cursor-pointer transition-colors flex gap-1.5 items-center group"
                           >
                             <Trash2 size={16} className="group-hover:scale-110 transition-transform" />
@@ -158,7 +158,7 @@ export default function Cart() {
             </div>
 
             <div className='lg:col-span-4'>
-              <Card className="border-none shadow-xl lg:shadow-md bg-white rounded-[28px] overflow-hidden sticky top-24">
+              <Card className="border-none shadow-xl lg:shadow-md bg-white overflow-hidden sticky top-24">
                 <CardContent className="p-6 space-y-5">
                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Checkout Summary</h3>
 
@@ -187,19 +187,29 @@ export default function Cart() {
                       ₹{Math.round(total).toLocaleString('en-IN')}
                     </span>
                   </div>
+                  
+                  <div className="relative flex items-center justify-between p-2 rounded-sm border-2 border-gray-100 bg-white/50 hover:border-pink-200 transition-all cursor-pointer group">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-pink-50 rounded-xl flex items-center justify-center text-pink-600 group-hover:bg-pink-100 transition-colors">
+                        <Truck size={24} />
+                      </div>
+                      <div>
+                        <p className="font-bold text-gray-900 text-sm">Cash on Delivery</p>
+                        <p className="text-[10px] text-gray-400 font-medium">Pay when your order arrives</p>
+                      </div>
+                    </div>
+                    <div className="h-5 w-5 rounded-full border-2 border-pink-500 flex items-center justify-center">
+                      <div className="h-2.5 w-2.5 rounded-full bg-pink-500" />
+                    </div>
+                  </div>
 
                   <div className='pt-2 space-y-4'>
                     <Button
                       asChild
-                      className='w-full h-14 text-[11px] font-black tracking-[0.15em] bg-gray-900 hover:bg-pink-600 rounded-2xl transition-all shadow-lg active:scale-95'
+                      className='w-full h-14 text-[11px] font-black tracking-[0.15em] bg-gray-900 hover:bg-pink-600 transition-all shadow-lg active:scale-95'
                     >
                       <Link to="/address">PLACE ORDER</Link>
                     </Button>
-
-                    <div className="flex items-center justify-center gap-2 text-[9px] text-gray-400 font-bold tracking-tight">
-                      <ShieldCheck size={14} className="text-green-500" />
-                      128-BIT SECURE ENCRYPTED CHECKOUT
-                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -219,7 +229,7 @@ export default function Cart() {
             </Link>
           </div>
 
-          <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[40px] shadow-sm border border-gray-50">
+          <div className="flex flex-col items-center justify-center py-32 bg-white shadow-sm border border-gray-50">
             <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mb-4">
               <ShoppingCart size={28} className="text-rose-400 fill-rose-100" />
             </div>

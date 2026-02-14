@@ -28,7 +28,7 @@ const HorizontalScroller = ({ title, products, icon: Icon }) => (
             {Icon && <Icon size={18} className="text-black" />}
             <h2 className='text-sm md:text-lg font-black tracking-tight text-gray-900 uppercase'>{title}</h2>
         </div>
-        <div className='flex overflow-x-auto gap-4 pb-4 no-scrollbar snap-x scroll-smooth'>
+        <div className='flex overflow-x-auto gap-1 pb-4 no-scrollbar snap-x scroll-smooth'>
             {products.map((p) => (
                 <div key={p._id} className="min-w-[150px] md:min-w-[240px] snap-start transition-all duration-300 hover:-translate-y-1">
                     <ProductCard product={p} />

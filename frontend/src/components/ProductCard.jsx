@@ -51,13 +51,13 @@ export default function ProductCard({ product, loading }) {
     if (loading || !product) return <CardSkeleton />;
 
     return (
-        <div className='group bg-white border border-gray-100 shadow-sm hover:shadow-xl rounded-md md:rounded-xl p-3 md:p-4 transition-all duration-300 w-full flex flex-col h-full'>
+        <div className='group bg-white border border-gray-100 shadow-sm hover:shadow-xl rounded-sm md:rounded-xl p-3 md:p-4 transition-all duration-300 w-full flex flex-col h-full'>
             <div className='bg-[#F8F9FA] rounded-md md:rounded-xl border border-gray-50 aspect-square relative flex items-center justify-center overflow-hidden shrink-0'>
                 <img
                     src={product?.productImg?.[0]?.url}
                     alt={product?.productName}
                     onClick={() => navigate(`/products/${product._id}`)}
-                    className='w-3/4 h-3/4 object-contain transition-transform duration-500 group-hover:scale-110 cursor-pointer'
+                    className='w-3/4 h-3/4 object-contain transition-transform duration-500 group-hover:scale-110 cursor-pointer rounded-sm'
                 />
                 <button
                     onClick={toggleWishlist}
@@ -80,7 +80,7 @@ export default function ProductCard({ product, loading }) {
                 
                 <div className="mt-auto">
                     <Button
-                        className='w-full bg-[#0F172A] hover:bg-[#1e293b] text-white rounded-xl md:rounded-xl h-9 md:h-11 mt-4 flex items-center justify-center gap-2 font-bold transition-all active:scale-95 text-xs md:text-sm'
+                        className='w-full bg-[#0F172A] hover:bg-[#1e293b] text-white md:rounded-xl h-9 md:h-11 mt-4 flex items-center justify-center gap-2 font-bold transition-all active:scale-95 text-xs md:text-sm'
                         onClick={() => addtoCart(product._id)}
                     >
                         <ShoppingCart size={16} />

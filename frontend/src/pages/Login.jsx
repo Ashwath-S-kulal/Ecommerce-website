@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Eye, EyeOff, Loader, ArrowLeft, ShieldCheck, Mail, Lock, CheckCircle2 } from "lucide-react"
+import { Eye, EyeOff, Loader, ArrowLeft, ShieldCheck, Mail, Lock } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import axios from "axios"
@@ -18,7 +18,7 @@ import { useDispatch } from "react-redux"
 import { setUser } from "@/redux/userSlice"
 
 export default function Login() {
-  const [mode, setMode] = useState("login") // 'login', 'forgot', 'verify', 'reset'
+  const [mode, setMode] = useState("login") 
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   
@@ -33,7 +33,6 @@ export default function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  // --- Handlers ---
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
@@ -102,57 +101,53 @@ export default function Login() {
   }
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen bg-[#fdf2f8] overflow-hidden p-6">
-      {/* Background Decorative Blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-gradient-to-br from-pink-200 to-transparent rounded-full blur-[120px] opacity-60 animate-pulse" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-gradient-to-tl from-purple-200 to-transparent rounded-full blur-[120px] opacity-60 animate-pulse" />
-
-      <Card className="relative w-full max-w-md shadow-2xl border-white/40 bg-white/70 backdrop-blur-2xl rounded-[2.5rem] overflow-hidden border">
-        <CardHeader className="space-y-1 text-center pt-10 px-8">
-          <div className="mx-auto w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-4 text-pink-600 shadow-xl shadow-pink-100/50 border border-pink-50">
-            <ShieldCheck size={36} strokeWidth={2.5} />
-          </div>
-          <CardTitle className="text-3xl font-black tracking-tight text-gray-900">
+    <div className="relative flex justify-center items-center min-h-screen bg-[#fdf2f8] overflow-hidden p-4 sm:p-6">
+     
+      <Card className="relative w-full max-w-[400px] mt-15">
+        
+        <CardHeader className="space-y-1 text-center pt-8 sm:pt-10 px-6 sm:px-8">
+          
+          <CardTitle className="text-2xl sm:text-3xl font-black tracking-tight text-gray-900">
             {mode === 'login' && "Welcome Back"}
             {mode === 'forgot' && "Reset Access"}
             {mode === 'verify' && "Verify Identity"}
             {mode === 'reset' && "New Password"}
           </CardTitle>
-          <CardDescription className="text-gray-500 font-medium pt-2">
-            {mode === 'login' && "Access your Sanjeevini account dashboard"}
-            {mode === 'forgot' && "Enter your email to receive a secure code"}
-            {mode === 'verify' && `We've sent a 6-digit code to your email`}
-            {mode === 'reset' && "Ensure your new password is secure"}
+          <CardDescription className="text-xs sm:text-sm text-gray-500 font-medium pt-1">
+            {mode === 'login' && "Look at Sanjeevini Products"}
+            {mode === 'forgot' && "Enter email for a secure code"}
+            {mode === 'verify' && `Code sent to your email`}
+            {mode === 'reset' && "Secure your new password"}
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="px-10 pb-10">
+        <CardContent className="px-6 sm:px-10 pb-8 sm:pb-10">
           <form onSubmit={
             mode === 'login' ? handleLogin : 
             mode === 'forgot' ? handleForgotPassword : 
             mode === 'verify' ? handleVerifyOTP : handleResetPassword
-          } className="space-y-5">
+          } className="space-y-4 sm:space-y-5">
             
             {/* --- LOGIN MODE --- */}
             {mode === 'login' && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Email Address</Label>
+              <div className="space-y-3 sm:space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Email Address</Label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-3.5 text-gray-300" size={18} />
-                    <Input name="email" type="email" required value={formData.email} onChange={handleChange} placeholder="name@company.com" className="pl-12 bg-white/50 border-gray-100 rounded-2xl h-12 focus:ring-pink-500 shadow-sm" />
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
+                    <Input name="email" type="email" required value={formData.email} onChange={handleChange} placeholder="youremail@gmail.com" className="pl-11 bg-white/50 border-gray-100  h-11 sm:h-12 text-sm focus:ring-pink-500 shadow-sm" />
                   </div>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
-                    <Label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Password</Label>
-                    <button type="button" onClick={() => setMode('forgot')} className="text-xs font-bold text-pink-600 hover:text-pink-700 transition-colors">Forgot Password?</button>
+                    <Label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Password</Label>
+                    <button type="button" onClick={() => setMode('forgot')} className="text-[10px] sm:text-xs font-bold text-pink-600 hover:text-pink-700 transition-colors">Forgot?</button>
                   </div>
                   <div className="relative">
-                    <Lock className="absolute left-4 top-3.5 text-gray-300" size={18} />
-                    <Input name="password" type={showPassword ? "text" : "password"} required value={formData.password} onChange={handleChange} className="pl-12 bg-white/50 border-gray-100 rounded-2xl h-12 focus:ring-pink-500 shadow-sm" />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-3.5 text-gray-400 hover:text-pink-600 transition-colors">
-                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
+                    <Input name="password" type={showPassword ? "text" : "password"} required value={formData.password} onChange={handleChange} className="pl-11 bg-white/50 border-gray-100  h-11 sm:h-12 text-sm focus:ring-pink-500 shadow-sm" />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-600 transition-colors">
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
                 </div>
@@ -161,54 +156,52 @@ export default function Login() {
 
             {/* --- FORGOT MODE --- */}
             {mode === 'forgot' && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1 text-center block">Registered Email</Label>
-                  <Input name="email" type="email" required value={formData.email} onChange={handleChange} placeholder="Enter your email address" className="bg-white/50 border-gray-100 rounded-2xl h-12 text-center shadow-sm" />
+              <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-400 ml-1 text-center block">Registered Email</Label>
+                  <Input name="email" type="email" required value={formData.email} onChange={handleChange} placeholder="Enter email" className="bg-white/50 border-gray-100 h-11 sm:h-12 text-sm text-center shadow-sm" />
                 </div>
               </div>
             )}
 
             {/* --- VERIFY MODE --- */}
             {mode === 'verify' && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="space-y-3">
-                   <Label className="block text-center text-xs font-bold uppercase text-gray-400 tracking-widest">Security Code</Label>
-                   <Input maxLength={6} className="text-center text-3xl tracking-[12px] font-black h-16 bg-white border-pink-100 text-pink-600 rounded-2xl shadow-xl shadow-pink-50" value={otp} onChange={(e) => setOtp(e.target.value)} required placeholder="••••••" />
-                </div>
+              <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <Label className="block text-center text-[10px] sm:text-xs font-bold uppercase text-gray-400 tracking-widest">Security Code</Label>
+                <Input maxLength={6} className="text-center text-2xl sm:text-3xl tracking-[8px] sm:tracking-[12px] font-black h-14 sm:h-16 bg-white border-pink-100 text-pink-600 rounded-xl sm:rounded-2xl shadow-lg" value={otp} onChange={(e) => setOtp(e.target.value)} required placeholder="••••••" />
               </div>
             )}
 
             {/* --- RESET MODE --- */}
             {mode === 'reset' && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">New Password</Label>
-                  <Input type="password" required value={newPasswords.newPassword} onChange={(e) => setNewPasswords({...newPasswords, newPassword: e.target.value})} className="bg-white/50 border-gray-100 rounded-2xl h-12 shadow-sm" />
+              <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">New Password</Label>
+                  <Input type="password" required value={newPasswords.newPassword} onChange={(e) => setNewPasswords({...newPasswords, newPassword: e.target.value})} className="bg-white/50 border-gray-100 rounded-xl sm:rounded-2xl h-11 sm:h-12 text-sm shadow-sm" />
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Confirm New Password</Label>
-                  <Input type="password" required value={newPasswords.confirmPassword} onChange={(e) => setNewPasswords({...newPasswords, confirmPassword: e.target.value})} className="bg-white/50 border-gray-100 rounded-2xl h-12 shadow-sm" />
+                <div className="space-y-1.5">
+                  <Label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gray-400 ml-1">Confirm Password</Label>
+                  <Input type="password" required value={newPasswords.confirmPassword} onChange={(e) => setNewPasswords({...newPasswords, confirmPassword: e.target.value})} className="bg-white/50 border-gray-100 rounded-xl sm:rounded-2xl h-11 sm:h-12 text-sm shadow-sm" />
                 </div>
               </div>
             )}
 
-            <Button type="submit" disabled={loading} className={`w-full h-14 rounded-2xl font-bold text-lg shadow-lg transition-all active:scale-[0.98] ${mode === 'reset' ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200' : 'bg-pink-600 hover:bg-pink-700 shadow-pink-200'}`}>
-              {loading ? <Loader className="animate-spin mr-2" size={20} /> : mode === 'login' ? "Sign In" : mode === 'forgot' ? "Send Reset Code" : mode === 'verify' ? "Verify & Continue" : "Update Password"}
+            <Button type="submit" disabled={loading} className={`w-full h-12 sm:h-14 font-bold text-base sm:text-lg shadow-lg transition-all active:scale-[0.98] ${mode === 'reset' ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200' : 'bg-pink-600 hover:bg-pink-700 shadow-pink-200'}`}>
+              {loading ? <Loader className="animate-spin mr-2" size={18} /> : mode === 'login' ? "Sign In" : mode === 'forgot' ? "Send Code" : mode === 'verify' ? "Verify" : "Update"}
             </Button>
 
             {mode !== 'login' && (
-              <button type="button" onClick={() => setMode('login')} className="w-full flex items-center justify-center gap-2 text-sm font-bold text-gray-400 hover:text-pink-600 transition-colors uppercase tracking-widest">
-                <ArrowLeft size={16} /> Back to Login
+              <button type="button" onClick={() => setMode('login')} className="w-full flex items-center justify-center gap-2 text-[10px] sm:text-xs font-bold text-gray-400 hover:text-pink-600 transition-colors uppercase tracking-widest pt-2">
+                <ArrowLeft size={14} /> Back to Login
               </button>
             )}
           </form>
         </CardContent>
 
         {mode === 'login' && (
-          <CardFooter className="justify-center border-t border-white/50 bg-white/30 py-6">
-            <p className="text-sm text-gray-500">
-              New to Sanjeevini? <Link to="/signup" className="ml-1 text-pink-600 font-black hover:underline underline-offset-4">Create Account</Link>
+          <CardFooter className="justify-center border-t border-white/50 bg-white/30 py-4 sm:py-6">
+            <p className="text-xs sm:text-sm text-gray-500">
+              New user? <Link to="/signup" className="ml-1 text-pink-600 font-black hover:underline underline-offset-4">Sign Up</Link>
             </p>
           </CardFooter>
         )}

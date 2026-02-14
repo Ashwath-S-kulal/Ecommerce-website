@@ -86,7 +86,7 @@ export default function SingleProducts() {
                                 Similar <span className="font-serif italic text-pink-500">{product.category}</span>
                             </h2>
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-8">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
                             {similarProducts.map(p => (
                                 <ProductCard key={p._id} product={p} />
                             ))}
@@ -100,7 +100,7 @@ export default function SingleProducts() {
                             Wait! You Might Also <span className="font-serif italic text-pink-500">Love These</span>
                         </h2>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-8">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
                         {suggestedProducts.map(p => (
                             <ProductCard key={p._id} product={p} />
                         ))}
