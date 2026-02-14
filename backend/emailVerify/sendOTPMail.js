@@ -65,7 +65,7 @@ export const sendOTPMail = async (otp, email) => {
     const { data, error } = await resend.emails.send({
       // FIXED: Must include a valid email address. 
       // Use 'onboarding@resend.dev' until you verify your own domain.
-      from: 'Sanjeevini Group Avarse <onboarding@resend.dev>', 
+      from: 'Sanjeevini Group Avarse<onboarding@resend.dev>', 
       to: email,
       subject: `Verification Code: ${otp} - Sanjeevini Group`,
       html: `
