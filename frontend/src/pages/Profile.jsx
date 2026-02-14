@@ -50,7 +50,7 @@ export default function Profile() {
             const formData = new FormData()
             Object.keys(updateUser).forEach(key => { if (key !== 'profilePic') formData.append(key, updateUser[key]); });
             if (file) formData.append("file", file);
-            const res = await axios.put(`http://localhost:8000/api/user/updateuser/${userId}`, formData, {
+            const res = await axios.put(`${import.meta.env.VITE_BASE_URI}/api/user/updateuser/${userId}`, formData, {
                 headers: { Authorization: `Bearer ${accessToken}`, "content-Type": "multipart/form-data" }
             })
             if (res.data.success) {

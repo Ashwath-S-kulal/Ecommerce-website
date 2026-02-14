@@ -38,6 +38,10 @@ const productSlice = createSlice({
       }
     },
 
+    setAddresses: (state, action) => {
+      state.addresses = action.payload;
+    },
+
     addAddress:(state, action)=>{
       if(!state.addresses) state.addresses= [];
       state.addresses.push(action.payload)
@@ -56,5 +60,5 @@ const productSlice = createSlice({
   },
 });
 
-export const { setProducts, setCart, setWishlist,addAddress,setSelectedAddress,deleteAddress,setNotifications,markAllNotificationsRead,markSingleRead } = productSlice.actions;
+export const { setProducts, setCart, setWishlist,addAddress,setAddresses,setSelectedAddress,deleteAddress,setNotifications,markAllNotificationsRead,markSingleRead } = productSlice.actions;
 export default productSlice.reducer;

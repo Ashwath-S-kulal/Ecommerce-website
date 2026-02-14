@@ -17,7 +17,7 @@ export default function Navbar() {
 
   const logoutHandler = async () => {
     try {
-      const res = await axios.post(`http://localhost:8000/api/user/logout`, {}, {
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URI}/api/user/logout`, {}, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
       if (res.data.success) {

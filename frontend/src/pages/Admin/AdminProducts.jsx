@@ -53,7 +53,7 @@ export default function AdminProduct() {
       .forEach((file) => { formData.append("files", file) })
 
     try {
-      const res = await axios.put(`/api/product/update/${editProduct._id}`, formData, {
+      const res = await axios.put(`${import.meta.env.VITE_BASE_URI}/api/product/update/${editProduct._id}`, formData, {
         headers: { Authorization: `Bearer ${accessToken}` }
       })
       if (res.data.success) {
@@ -75,7 +75,7 @@ export default function AdminProduct() {
   const deleteProductHandler = async (productId) => {
     setIsDeleting(productId)
     try {
-      const res = await axios.delete(`/api/product/delete/${productId}`, {
+      const res = await axios.delete(`${import.meta.env.VITE_BASE_URI}/api/product/delete/${productId}`, {
         headers: { Authorization: `Bearer ${accessToken}` }
       })
       if (res.data.success) {

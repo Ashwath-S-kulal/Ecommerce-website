@@ -26,7 +26,7 @@ const AllUsers = () => {
         return;
       }
       try {
-        const res = await axios.get("/api/user/alluser", {
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URI}/api/user/alluser`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setUsers(res.data.users);
@@ -42,7 +42,7 @@ const AllUsers = () => {
   const logoutHandler = async (user) => {
     try {
       const res = await axios.post(
-        `/api/user/logout`,
+        `${import.meta.env.VITE_BASE_URI}/api/user/logout`,
         {},
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -63,7 +63,7 @@ const AllUsers = () => {
   if (!window.confirm(`Are you sure you want to delete ${user.firstName}'s account?`)) return;
 
   try {
-    const res = await fetch(`/api/user/deleteuser/${user._id}`, {
+    const res = await fetch(`${import.meta.env.VITE_BASE_URI}/api/user/deleteuser/${user._id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${accessToken}`, // <-- add this!
@@ -122,7 +122,7 @@ const AllUsers = () => {
       });
       if (file) formData.append("file", file);
 
-      const res = await axios.put(`/api/user/updateuser/${userId}`, formData, {
+      const res = await axios.put(`${import.meta.env.VITE_BASE_URI}/api/user/updateuser/${userId}`, formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "content-Type": "multipart/form-data",

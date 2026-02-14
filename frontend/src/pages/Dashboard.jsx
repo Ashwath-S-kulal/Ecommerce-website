@@ -114,15 +114,16 @@ const AdminLayout = () => {
       </aside>
 
       <main className="flex-1 flex flex-col min-w-0 px-1 lg:pr-6 lg:pl-0 py-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="lg:hidden rounded-xl bg-slate-50"
-          onClick={() => setOpen(true)}
-        >
-          <Menu size={20} className="text-slate-600" />
-        </Button>
+
         <header className="h-20 bg-white border border-slate-100 rounded-[25px] lg:rounded-[30px] shadow-sm mb-6 px-4 lg:px-8 flex items-center justify-between">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden rounded-xl bg-slate-50"
+            onClick={() => setOpen(true)}
+          >
+            <Menu size={20} className="text-slate-600" />
+          </Button>
           <div className="flex items-center gap-3">
             <span className="text-sm font-bold text-slate-400 capitalize whitespace-nowrap">
               {location.pathname.split('/').pop()?.replace('-', ' ') || 'Overview'}

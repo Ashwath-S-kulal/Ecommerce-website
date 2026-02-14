@@ -25,7 +25,7 @@ export default function ShowUserOrders() {
     const fetchOrders = async () => {
       try {
         const accessToken = localStorage.getItem('accessToken');
-        const { data } = await axios.get("/api/order/getallorders", {
+        const { data } = await axios.get(`${import.meta.env.VITE_BASE_URI}/api/order/getallorders`, {
           headers: { Authorization: `Bearer ${accessToken}` }
         });
 

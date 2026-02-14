@@ -61,7 +61,7 @@ const AddProduct = () => {
 
     try {
       setLoading(true)
-      const res = await axios.post('/api/product/add', formData, {
+      const res = await axios.post(`${import.meta.env.VITE_BASE_URI}/api/product/add`, formData, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }

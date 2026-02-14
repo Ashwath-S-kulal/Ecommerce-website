@@ -30,7 +30,7 @@ export default function ProductDesc({ product }) {
         if (!accessToken) return toast.error("Please login to add items")
         setLoading(true)
         try {
-            const res = await axios.post('/api/cart/add', { productId }, {
+            const res = await axios.post(`${import.meta.env.VITE_BASE_URI}/api/cart/add`, { productId }, {
                 headers: { Authorization: `Bearer ${accessToken}` }
             })
             if (res.data.success) {
@@ -47,7 +47,7 @@ export default function ProductDesc({ product }) {
 
     const toggleWishlist = async () => {
         if (!accessToken) return toast.error("Please login first")
-        const endpoint = isInWishlist ? '/api/wishlist/remove' : '/api/wishlist/add'
+        const endpoint = isInWishlist ? `${import.meta.env.VITE_BASE_URI}/api/wishlist/remove` : `${import.meta.env.VITE_BASE_URI}/api/wishlist/add`
         try {
             const res = await axios({
                 method: isInWishlist ? 'delete' : 'post',

@@ -42,7 +42,7 @@ export default function ShowUserOrders() {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const res = await axios.get("/api/order/getuserorder", {
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URI}/api/order/getuserorder`, {
                     headers: { Authorization: `Bearer ${accessToken}` },
                     withCredentials: true,
                 });
@@ -59,7 +59,7 @@ export default function ShowUserOrders() {
 
     const handleCancelOrder = async (orderId) => {
         try {
-            const res = await axios.post(`/api/order/cancelorder/${orderId}`, {}, {
+            const res = await axios.post(`${import.meta.env.VITE_BASE_URI}/api/order/cancelorder/${orderId}`, {}, {
                 headers: { Authorization: `Bearer ${accessToken}` },
                 withCredentials: true,
             });

@@ -14,8 +14,8 @@ export default function Wishlist() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
 
-    const API = "/api/wishlist";
-    const CART_API = "/api/cart";
+    const API = `${import.meta.env.VITE_BASE_URI}/api/wishlist`;
+    const CART_API = `${import.meta.env.VITE_BASE_URI}/api/cart`;
     const accessToken = localStorage.getItem('accessToken');
 
     const loadWishlist = async () => {

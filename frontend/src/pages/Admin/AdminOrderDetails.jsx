@@ -24,7 +24,7 @@ export default function OrderDetailsPage() {
     const fetchOrderDetails = async () => {
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const { data } = await axios.get(`/api/order/getorder/${orderId}`, {
+            const { data } = await axios.get(`${import.meta.env.VITE_BASE_URI}/api/order/getorder/${orderId}`, {
                 headers: { Authorization: `Bearer ${accessToken}` }
             });
             if (data.success) setOrder(data.order);
@@ -45,7 +45,7 @@ export default function OrderDetailsPage() {
 
         try {
             const accessToken = localStorage.getItem('accessToken');
-            const { data } = await axios.post(`/api/order/updateorderstatusadmin/${orderId}`,
+            const { data } = await axios.post(`${import.meta.env.VITE_BASE_URI}/api/order/updateorderstatusadmin/${orderId}`,
                 { status: newStatus },
                 { headers: { Authorization: `Bearer ${accessToken}` } }
             );

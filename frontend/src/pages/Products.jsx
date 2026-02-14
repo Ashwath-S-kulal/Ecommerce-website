@@ -81,7 +81,7 @@ export default function Products() {
     const getAllProducts = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`/api/product/getallproducts`);
+            const res = await axios.get(`${import.meta.env.VITE_BASE_URI}/api/product/getallproducts`);
             if (res.data.success) {
                 const fetched = res.data.products;
                 setAllProducts(fetched);

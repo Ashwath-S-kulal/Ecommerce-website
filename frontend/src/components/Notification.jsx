@@ -15,7 +15,7 @@ export default function Notifications() {
     const fetchNotifications = async () => {
         if (!accessToken) return;
         try {
-            const res = await axios.get("http://localhost:8000/api/notification/get", {
+            const res = await axios.get(`${import.meta.env.VITE_BASE_URI}/api/notification/get`, {
                 headers: { Authorization: `Bearer ${accessToken}` }
             });
             if (res.data.success) {
@@ -31,7 +31,7 @@ export default function Notifications() {
     const handleRead = async (id, orderId) => {
         dispatch(markSingleRead(id));
         try {
-            await axios.post(`http://localhost:8000/api/notification/read/${id}`, {}, { 
+            await axios.post(`${import.meta.env.VITE_BASE_URI}/api/notification/read/${id}`, {}, { 
                 headers: { Authorization: `Bearer ${accessToken}` } 
             });
         } catch (err) { 
@@ -46,7 +46,7 @@ export default function Notifications() {
     const handleMarkAllAsRead = async () => {
         dispatch(markAllNotificationsRead());
         try {
-            await axios.post("http://localhost:8000/api/notification/allread", {}, {
+            await axios.post(`${import.meta.env.VITE_BASE_URI}/api/notification/allread`, {}, {
                 headers: { Authorization: `Bearer ${accessToken}` }
             });
         } catch (err) {

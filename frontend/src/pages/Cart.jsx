@@ -21,7 +21,7 @@ export default function Cart() {
   const freeShippingThreshold = 5000;
   const progressToFreeShipping = Math.min((subTotal / freeShippingThreshold) * 100, 100);
 
-  const API = "/api/cart";
+  const API = `${import.meta.env.VITE_BASE_URI}/api/cart`;
   const accessToken = localStorage.getItem('accessToken');
 
   const loadCart = async () => {

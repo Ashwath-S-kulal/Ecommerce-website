@@ -19,7 +19,7 @@ export default function ProductCard({ product, loading }) {
     const addtoCart = async (productId) => {
         if (!accessToken) return toast.error("Please login first");
         try {
-            const res = await axios.post('/api/cart/add', { productId }, {
+            const res = await axios.post(`${import.meta.env.VITE_BASE_URI}/api/cart/add`, { productId }, {
                 headers: { Authorization: `Bearer ${accessToken}` }
             });
             if (res.data.success) {
@@ -32,7 +32,7 @@ export default function ProductCard({ product, loading }) {
     const toggleWishlist = async (e) => {
         e.stopPropagation(); // Prevent navigation when clicking heart
         if (!accessToken) return toast.error("Please login first");
-        const endpoint = isInWishlist ? '/api/wishlist/remove' : '/api/wishlist/add';
+        const endpoint = isInWishlist ? `${import.meta.env.VITE_BASE_URI}/api/wishlist/remove` : `${import.meta.env.VITE_BASE_URI}/api/wishlist/add`;
         const method = isInWishlist ? 'delete' : 'post';
         try {
             const res = await axios({

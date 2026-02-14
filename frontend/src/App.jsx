@@ -26,7 +26,6 @@ import AdminSales from "./pages/admin/AdminSales";
 import AddProduct from "./pages/admin/AddProduct";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminOrders from "./pages/Admin/AdminOrders";
-import ShowUserOrders from "./pages/Admin/ShowUserOrders";
 import AdminUsers from "./pages/Admin/AdminUsers";
 import AdminOrderDetails from "./pages/Admin/AdminOrderDetails"
 import Notification from "./components/Notification";
@@ -59,7 +58,6 @@ export default function App() {
           <Route path="add-product" element={<AddProduct />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
-          <Route path="users/orders/:userId" element={<ShowUserOrders />} />
           <Route path="users" element={<AdminUsers />} />
           <Route path="order-details/:orderId" element={<AdminOrderDetails />} />
         </Route>

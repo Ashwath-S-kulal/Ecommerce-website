@@ -18,13 +18,13 @@ export default function Home() {
       try {
         const headers = { Authorization: `Bearer ${token}` };
         const requests = [
-          axios.get("/api/cart/", { headers }),
-          axios.get("/api/wishlist/get", { headers })
+          axios.get(`${import.meta.env.VITE_BASE_URI}/api/cart/`, { headers }),
+          axios.get(`${import.meta.env.VITE_BASE_URI}/api/wishlist/get`, { headers })
         ];
 
         const isAdmin = user?.role === 'admin';
         if (isAdmin) {
-          requests.push(axios.get("/api/notification/get", { headers }));
+          requests.push(axios.get(`${import.meta.env.VITE_BASE_URI}/api/notification/get`, { headers }));
         }
 
         const responses = await Promise.all(requests);

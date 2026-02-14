@@ -22,9 +22,9 @@ export default function UnifiedAdminDashboard() {
     setLoading(true);
     try {
       const [userRes, productRes, orderRes] = await Promise.all([
-        axios.get("/api/user/alluser", { headers: { Authorization: `Bearer ${accessToken}` } }),
-        axios.get("/api/product/getallproducts"),
-        axios.get("/api/order/getallorders", { headers: { Authorization: `Bearer ${accessToken}` } })
+        axios.get(`${import.meta.env.VITE_BASE_URI}/api/user/alluser`, { headers: { Authorization: `Bearer ${accessToken}` } }),
+        axios.get(`${import.meta.env.VITE_BASE_URI}/api/product/getallproducts`),
+        axios.get(`${import.meta.env.VITE_BASE_URI}/api/order/getallorders`, { headers: { Authorization: `Bearer ${accessToken}` } })
       ]);
 
       const orders = orderRes.data.orders || [];
@@ -33,7 +33,8 @@ export default function UnifiedAdminDashboard() {
         users: userRes.data.users?.length || 0,
         products: productRes.data.products?.length || 0,
         totalOrders: orders.length,
-        revenue: orders.reduce((acc, o) => acc + (o.amount || 0), 0)
+        // revenue: orders.reduce((acc, o) => acc + (o.amount || 0), 0)
+        revenue: orders.filter(order => order.status === 'Delivered') .reduce((acc, o) => acc + (o.totalAmount || o.amount || 0), 0)
       });
 
       processAnalytics(orders, "monthly");
