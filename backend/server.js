@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://ecommerce-website-wysr.vercel.app/',
+  origin: process.env.FRONTEND_URI,
   credentials: true,
 }
 ));
