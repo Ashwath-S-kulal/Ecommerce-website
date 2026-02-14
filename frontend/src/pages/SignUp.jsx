@@ -117,7 +117,7 @@ export default function SignUp() {
     }
 
     return (
-        <div className="relative flex justify-center items-center min-h-screen sm:bg-[#fdf2f8] bg-white overflow-hidden p-4 sm:p-6  mt-15 sm:pt-20 mb-20">
+        <div className="relative flex justify-center items-center min-h-screen sm:bg-[#fdf2f8] bg-white overflow-hidden p-4 sm:p-6 mt-0 md:mt-15 sm:pt-20 mb-0 md:mb-20">
             <Card className="relative w-full max-w-lg border-none ">
                 <CardHeader className="space-y-1 text-center py-6 sm:pt-10">
                   

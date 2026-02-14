@@ -103,7 +103,7 @@ export default function Login() {
   return (
     <div className="relative flex justify-center items-center min-h-screen bg-[#fdf2f8] overflow-hidden p-4 sm:p-6">
      
-      <Card className="relative w-full max-w-[400px] mt-15">
+      <Card className="relative w-full max-w-[400px] mt-0 md:mt-15">
         
         <CardHeader className="space-y-1 text-center pt-8 sm:pt-10 px-6 sm:px-8">
           
