@@ -97,7 +97,7 @@ export default function ShowUserOrders() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-6 md:space-y-10 bg-white mt-15 md:mt-10 rounded-xl min-h-screen mb-15">
+        <div className="max-w-6xl mx-auto p-4 md:p-10 space-y-6 md:space-y-10 bg-white mt-15 md:mt-10 rounded-xl min-h-screen pb-25 ">
             <header className="space-y-1 text-center md:text-left text-left">
                 <h1 className="text-xl md:text-3xl font-black text-slate-900 tracking-tight">My Purchases</h1>
                 <p className="text-slate-500 text-[11px] md:text-sm font-medium">Manage your orders and shipping status</p>

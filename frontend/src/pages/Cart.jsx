@@ -69,7 +69,7 @@ export default function Cart() {
   }, [dispatch]);
 
   return (
-    <div className='pt-20 pb-10 bg-[#f8f9fa] min-h-screen px-3 md:px-6 mb-10'>
+    <div className='pt-20 pb-20 bg-[#f8f9fa] min-h-screen px-3 md:px-6 '>
       {cart?.items?.length > 0 ? (
         <div className='max-w-[1200px] mx-auto'>
           <div className="flex flex-row items-center justify-between mb-6 border-b pb-4 border-gray-200">
