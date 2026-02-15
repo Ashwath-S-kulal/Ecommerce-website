@@ -5,6 +5,9 @@ import { verifyEmail } from "../emailVerify/verifyEmail.js";
 import { Session } from "../models/sessionModel.js";
 import { sendOTPMail } from "../emailVerify/sendOTPMail.js";
 import cloudinary from "../utils/cloudinary.js";
+import { Cart } from "../models/cartModel.js";
+import { Wishlist } from "../models/wishlistModel.js";
+import { Order } from "../models/orderModel.js";
 
 
 // export const register = async (req, res) => {
@@ -534,18 +537,35 @@ export const updateUser= async (req, res) => {
 
 export const deleteUser = async (req, res, next) => {
   try {
-    const userToDelete = await User.findById(req.params.id);
+    const userId = req.params.id;
+    const userToDelete = await User.findById(userId);
+
     if (!userToDelete) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
-    if (req.user.id !== req.params.id && req.user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'You can delete only your account!' });
+
+    if (req.user.id !== userId && req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Unauthorized action!' });
     }
 
-    await User.findByIdAndDelete(req.params.id);
-    return res.status(200).json({ success: true, message: 'User has been deleted...' });
+    await Promise.all([
+      Cart.findOneAndDelete({ userId: userId }),      // Delete Cart
+      Wishlist.findOneAndDelete({ userId: userId }),  // Delete Wishlist
+      Order.deleteMany({ userId: userId }),           // Delete all Orders
+      // If you have reviews or comments:
+      // Review.deleteMany({ userId: userId })
+    ]);
+
+    // 2. Finally, delete the User
+    await User.findByIdAndDelete(userId);
+
+    return res.status(200).json({ 
+      success: true, 
+      message: 'User and all associated data (cart, wishlist, orders) have been deleted.' 
+    });
+
   } catch (error) {
-    console.error(error);
+    console.error("Delete Error:", error);
     return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
