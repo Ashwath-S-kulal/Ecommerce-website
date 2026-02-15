@@ -53,45 +53,33 @@
 //   });
 // };
 
-
-export const runtime = 'edge';
 export const sendOTPMail = async (otp, email) => {
+  // Add this to check if the key is actually reaching Vercel
+  if (!process.env.BREVO_API_KEY) {
+    console.error("CRITICAL: BREVO_API_KEY is missing in Vercel!");
+    return { success: false, error: "Configuration missing" };
+  }
+
   try {
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
-        'accept': 'application/json',
-        'api-key': process.env.BREVO_API_KEY, // Your API v3 key
+        'api-key': process.env.BREVO_API_KEY,
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        sender: { 
-          name: "Sanjeevini Group Avarse", 
-          email: "ashwathsashwaths33@gmail.com" // Must be verified in Brevo
-        },
+        sender: { name: "Sanjeevini Group", email: "ashwathsashwaths33@gmail.com" },
         to: [{ email: email }],
-        subject: `Verify Your Account: ${otp}`,
-        htmlContent: `
-          <div style="font-family: Arial, sans-serif; padding: 20px;">
-            <h2 style="color: #db2777;">Sanjeevini Group</h2>
-            <p>Your verification code is:</p>
-            <h1 style="letter-spacing: 5px;">${otp}</h1>
-            <p>This code will expire in 10 minutes.</p>
-          </div>
-        `
+        subject: `OTP: ${otp}`,
+        htmlContent: `<h1>${otp}</h1>`
       })
     });
 
     const data = await response.json();
-    
-    if (!response.ok) {
-      console.error("Brevo Error:", data);
-      return { success: false, error: data };
-    }
-
-    return { success: true, messageId: data.messageId };
+    console.log("Brevo Response:", data); // Check this in Vercel Logs
+    return { success: true };
   } catch (err) {
-    console.error("Fetch Error:", err);
+    console.error("Vercel Edge Error:", err);
     return { success: false, error: err.message };
   }
 };
