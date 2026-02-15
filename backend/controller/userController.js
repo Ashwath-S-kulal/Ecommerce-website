@@ -5,6 +5,9 @@ import { verifyEmail } from "../emailVerify/verifyEmail.js";
 import { Session } from "../models/sessionModel.js";
 import { sendOTPMail } from "../emailVerify/sendOTPMail.js";
 import cloudinary from "../utils/cloudinary.js";
+import { Cart } from "../models/cartModel.js";
+import { Wishlist } from "../models/wishlistModel.js";
+import { Order } from "../models/orderModel.js";
 
 
 // export const register = async (req, res) => {
@@ -549,7 +552,7 @@ export const deleteUser = async (req, res, next) => {
       Wishlist.deleteMany({ userId: userId }), 
       Order.deleteMany({ userId: userId }),    
     ]);
-    
+
     await User.findByIdAndDelete(userId);
 
     return res.status(200).json({ 
