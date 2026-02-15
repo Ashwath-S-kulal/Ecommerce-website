@@ -1,41 +1,23 @@
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="manifest" href="/manifest.json" />
 
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Sanjeevini">
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
 
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <title>Sanjeevini group Avarse</title>
-
-    <style>
-      /* This CSS forces the app to the absolute edges of the phone */
-      html, body {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        /* Use dvh to prevent jumping when browser bars hide */
-        min-height: 100dvh; 
-        overflow-x: hidden;
-      }
-
-      #root {
-        height: 100%;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        /* This ensures your background goes to the top, 
-           but your actual text/buttons don't get hidden under the clock */
-        padding-top: env(safe-area-inset-top);
-      }
-    </style>
   </head>
   <body>
     <div id="root"></div>
