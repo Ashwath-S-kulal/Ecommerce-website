@@ -59,7 +59,12 @@ export default function Home() {
               We are a self-sustaining ecosystem where 100% of production and logistics are managed by women from the Sanjeevini Group.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-              <Button className="rounded-full bg-slate-900 px-8 h-12 w-full sm:w-auto hover:bg-pink-600 transition-all">Shop Now</Button>
+              <Button
+                onClick={() => window.installSanjeeviniApp()}
+                className="bg-green-600 text-white px-4 py-2 rounded-full"
+              >
+                Download App
+              </Button>
               <Button variant="ghost" className="rounded-full px-6 h-12 w-full sm:w-auto border border-slate-200">Our Impact</Button>
             </div>
           </div>
