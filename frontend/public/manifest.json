@@ -1,6 +1,6 @@
 {
   "short_name": "Sanjeevini",
-  "name": "Sanjeevini group Avarse",
+  "name": "Sanjeevini Group Avarse",
   "icons": [
     {
       "src": "icon-192.png",
@@ -13,8 +13,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
+  "start_url": "./index.html",
+  "display": "fullscreen", 
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }
