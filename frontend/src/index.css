@@ -118,17 +118,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-
-#root {
-  /* This is the magic part: it forces the app to the very top edge */
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  
-  /* If you want your content (text/icons) to stay just below the notch 
-     but your background to go behind it, use this: */
-  padding-top: env(safe-area-inset-top);
-}
