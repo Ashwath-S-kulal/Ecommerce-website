@@ -80,7 +80,6 @@ const AddProduct = () => {
 
   return (
     <div className='min-h-screen bg-slate-50/50 pb-20'>
-      {/* --- HEADER BANNER (Per Screenshot) --- */}
       <div className='bg-[#E91E63] pt-12 pb-24 px-8 flex justify-between items-start rounded-xl'>
         <div>
           <h1 className='text-3xl font-black text-white tracking-tight'>Add a new Products</h1>
@@ -91,14 +90,11 @@ const AddProduct = () => {
         </div>
       </div>
 
-      {/* --- FORM CONTAINER --- */}
       <div className='container mx-auto px-4 -mt-16'>
         <div className='max-w-4xl mx-auto bg-white rounded-xl shadow-2xl shadow-pink-100/50 border border-slate-100 overflow-hidden'>
           
           <div className='p-8 md:p-12 space-y-10'>
-            
-            {/* --- SECTION 1: GENERAL INFO --- */}
-            <section className='space-y-6'>
+                        <section className='space-y-6'>
               <h2 className='text-2xl font-black text-slate-800 border-b border-slate-50 pb-4'>General Information</h2>
               
               <div className='grid md:grid-cols-2 gap-6'>
@@ -166,7 +162,6 @@ const AddProduct = () => {
               </div>
             </section>
 
-            {/* --- SECTION 2: VISUAL ASSETS --- */}
             <section className='space-y-6 pt-6 border-t border-slate-50'>
               <div className='flex items-center gap-2 text-[#E91E63] font-bold text-xs uppercase tracking-[0.2em] mb-4'>
                 <Camera size={14} /> Visual Assets
@@ -176,7 +171,6 @@ const AddProduct = () => {
               </div>
             </section>
 
-            {/* --- SUBMIT BUTTON --- */}
             <div className='pt-6'>
               <Button 
                 disabled={loading} 
