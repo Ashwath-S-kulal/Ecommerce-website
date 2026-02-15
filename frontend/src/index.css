@@ -119,14 +119,6 @@
   }
 }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100dvh; /* Uses the full dynamic height */
-  background-color: #000000; /* Match this to your app's top bar color */
-  overflow: x-hidden;
-}
 
 #root {
   /* This is the magic part: it forces the app to the very top edge */
