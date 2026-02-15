@@ -39,25 +39,6 @@ const AllUsers = () => {
     fetchUsers();
   }, [accessToken]);
 
-  const logoutHandler = async (user) => {
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_BASE_URI}/api/user/logout`,
-        {},
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
-      if (res.data.success) {
-        toast.success(`${user.firstName} has been logged out`);
-        if (currentUser._id === user._id) {
-          dispatch(setUser(null));
-          localStorage.removeItem("accessToken");
-        }
-      }
-    } catch (error) {
-        console.error("Logout error:", error);
-      toast.error("Logout failed");
-    }
-  };
 
  const handleDeleteAccount = async (user) => {
   if (!window.confirm(`Are you sure you want to delete ${user.firstName}'s account?`)) return;
@@ -354,9 +335,6 @@ if (loading) {
 
                 <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-slate-100">
                   <div className="flex gap-3">
-                    <button type="button" onClick={() => logoutHandler(updateUser)} className="flex items-center px-4 py-2 text-amber-600 hover:bg-amber-50 rounded-xl text-sm font-bold transition-colors">
-                      <LogOut size={16} className="mr-2" /> Logout
-                    </button>
                     <button type="button" onClick={() => handleDeleteAccount(updateUser)} className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 rounded-xl text-sm font-bold transition-colors">
                       <Trash2 size={16} className="mr-2" /> Delete
                     </button>

@@ -238,7 +238,7 @@ export default function AdminProduct() {
 
                             <DialogFooter className='p-8 pt-0 pb-4 bg-slate-50/50 border-t border-slate-100 flex items-center gap-3'>
                               <DialogClose asChild>
-                                <Button variant="ghost" className='rounded-sm px-6 font-bold text-slate-400 hover:text-slate-600'>Cancel</Button>
+                                <Button variant="ghost" className='rounded-sm px-6 font-bold text-white-400 hover:text-slate-600'>Cancel</Button>
                               </DialogClose>
                               <Button onClick={handleSave} disabled={isUpdating} className='bg-pink-600 hover:bg-pink-700 text-white rounded-sm px-10 h-12 font-bold shadow-lg shadow-pink-200 transition-all hover:scale-105 active:scale-95'>
                                 {isUpdating ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating...</> : "Save Changes"}
