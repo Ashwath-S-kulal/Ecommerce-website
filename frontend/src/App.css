@@ -40,3 +40,15 @@
 .read-the-docs {
   color: #888;
 }
+
+header {
+  padding-top: env(safe-area-inset-top);
+  
+  background-color: #000000; 
+  height: 60px;
+}
+
+body {
+  margin: 0;
+  background-color: #000000; 
+}
