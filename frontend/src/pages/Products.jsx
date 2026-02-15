@@ -202,7 +202,7 @@ export default function Products() {
                     </div>
                 </div>
 
-                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-8 '>
+                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-4 '>
                     {loading ? (
                         <WishlistSkeleton />
                     ) : currentProducts.length > 0 ? (
