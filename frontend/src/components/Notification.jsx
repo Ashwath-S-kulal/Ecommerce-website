@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {  markSingleRead, setNotifications } from '@/redux/productSlice';
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "../assets/Product Doesnt Exist.webp"
 
 export default function Notifications() {
     const { notifications } = useSelector((state) => state.product);
@@ -154,7 +155,7 @@ export default function Notifications() {
                                             >
                                                 <div className="relative shrink-0">
                                                     <img
-                                                        src={product?.productImg?.[0]?.url || 'https://placehold.co/100'}
+                                                        src={product?.productImg?.[0]?.url || {Image}}
                                                         className={`w-12 h-12 md:w-14 md:h-14 rounded-lg md:rounded-[18px] object-cover bg-zinc-50 ${!n.isRead ? "ring-2 ring-blue-50 ring-offset-1" : ""}`}
                                                         alt="prod"
                                                     />
