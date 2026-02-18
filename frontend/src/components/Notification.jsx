@@ -155,7 +155,7 @@ export default function Notifications() {
                                             >
                                                 <div className="relative shrink-0">
                                                     <img
-                                                        src={product?.productImg?.[0]?.url || {Image}}
+                                                        src={product?.productImg?.[0]?.url || Image}
                                                         className={`w-12 h-12 md:w-14 md:h-14 rounded-lg md:rounded-[18px] object-cover bg-zinc-50 ${!n.isRead ? "ring-2 ring-blue-50 ring-offset-1" : ""}`}
                                                         alt="prod"
                                                     />
