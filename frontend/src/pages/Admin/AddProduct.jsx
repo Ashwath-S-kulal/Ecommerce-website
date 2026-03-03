@@ -44,7 +44,7 @@ const AddProduct = () => {
     formData.append("upload_preset", "your_upload_preset")
 
     const res = await fetch(
-      "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload",
+      "https://api.cloudinary.com/v1_1/dzapo7ctq/image/upload",
       {
         method: "POST",
         body: formData
