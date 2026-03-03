@@ -64,14 +64,14 @@ export default function OrderDetailsPage() {
     };
 
     if (loading) return (
-       <div className="min-h-screen bg-[#FBFBFE] p-6 md:p-12 animate-pulse">
+        <div className="min-h-screen bg-[#FBFBFE] p-6 md:p-12 animate-pulse">
             <div className="max-w-7xl mx-auto">
                 <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-6">
                     <div className="space-y-4">
-                        <div className="h-6 w-20 bg-slate-200 rounded-lg" /> 
-                        <div className="h-10 w-64 bg-slate-200 rounded-xl" /> 
+                        <div className="h-6 w-20 bg-slate-200 rounded-lg" />
+                        <div className="h-10 w-64 bg-slate-200 rounded-xl" />
                     </div>
-                    <div className="h-20 w-48 bg-slate-100 rounded-[24px]" /> 
+                    <div className="h-20 w-48 bg-slate-100 rounded-[24px]" />
                 </header>
 
                 <div className="flex flex-col gap-10">
@@ -80,7 +80,7 @@ export default function OrderDetailsPage() {
                             <div className="h-6 w-40 bg-slate-200 rounded" />
                             <div className="h-6 w-16 bg-slate-100 rounded-lg" />
                         </div>
-                        
+
                         {[1, 2].map((i) => (
                             <div key={i} className="flex items-center gap-6 py-6 border-b border-slate-50 last:border-0">
                                 <div className="w-28 h-28 bg-slate-100 rounded-3xl" />
@@ -102,7 +102,7 @@ export default function OrderDetailsPage() {
                             <div className="h-4 w-32 bg-slate-200 rounded" />
                             <div className="h-32 bg-slate-50 rounded-[32px]" />
                         </div>
-                        
+
                         <div className="bg-white rounded-xl border border-slate-100 p-8 w-full space-y-4">
                             <div className="h-4 w-32 bg-slate-200 rounded mb-4" />
                             {[1, 2, 3].map((i) => (
@@ -178,37 +178,54 @@ export default function OrderDetailsPage() {
                 <div className="flex flex-col gap-10">
                     <main className="lg:col-span-8 space-y-8 shadow-md rounded-xl">
                         <section className="bg-white rounded-xl border border-slate-100 shadow-[0_10px_40px_rgba(0,0,0,0.02)] overflow-hidden">
-                            <div className="p-8 border-b border-slate-50 flex justify-between items-center">
-                                <h2 className="text-lg font-black uppercase tracking-tight flex items-center gap-3">
-                                    <Package className="text-pink-500" size={22} /> Shipment Contents
+                            <div className="p-5 md:p-8 border-b border-slate-50 flex justify-between items-center">
+                                <h2 className="text-base md:text-lg font-black uppercase tracking-tight flex items-center gap-3">
+                                    <Package className="text-pink-500" size={22} />
+                                    <span className="hidden xs:inline">Shipment Contents</span>
+                                    <span className="xs:hidden">Contents</span>
                                 </h2>
-                                <span className="text-xs font-black text-slate-400 bg-slate-50 px-3 py-1 rounded-lg italic">
+                                <span className="text-[10px] md:text-xs font-black text-slate-400 bg-slate-50 px-3 py-1 rounded-lg italic">
                                     {order.products.length} Units
                                 </span>
                             </div>
 
                             <div className="divide-y divide-slate-50">
                                 {order.products.map((item, idx) => (
-                                    <div key={idx} className="p-6 flex items-center gap-6 group hover:bg-slate-50/50 transition-colors">
-                                        <div className="relative w-28 h-28 bg-slate-100 rounded-3xl overflow-hidden shadow-inner">
+                                    <div key={idx} className="p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6 group hover:bg-slate-50/50 transition-colors">
+
+                                        <div className="relative w-full sm:w-28 h-48 sm:h-28 bg-slate-100 rounded-2xl md:rounded-3xl overflow-hidden shadow-inner">
                                             <img
                                                 src={item.productId?.productImg?.[0]?.url || ProductNullImg}
                                                 alt="product"
                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                             />
                                         </div>
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-start">
+
+                                        <div className="flex-1 w-full">
+                                            <div className="flex flex-col md:flex-row justify-between items-start gap-2">
                                                 <div className="space-y-1">
-                                                    <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest">{item.productId?.category}</p>
-                                                    <h3 className="text-xl font-black italic text-slate-800 ">{item.productId?.productName}</h3>
-                                                    <div className="flex items-center gap-3 mt-2">
-                                                        <span className="text-xs font-bold text-slate-400 italic">Qty: {item.quantity}</span>
+                                                    <p className="text-[9px] md:text-[10px] font-black text-pink-500 uppercase tracking-widest">
+                                                        {item.productId?.category || "General"}
+                                                    </p>
+                                                    <h3 className="text-lg md:text-xl font-black italic text-slate-800 leading-tight">
+                                                        {item.productId?.productName || "Unknown Product"}
+                                                    </h3>
+                                                    <div className="flex items-center gap-3 mt-1 md:mt-2">
+                                                        <span className="text-xs font-bold text-slate-400 italic bg-slate-50 px-2 py-0.5 rounded">
+                                                            Qty: {item.quantity}
+                                                        </span>
                                                     </div>
                                                 </div>
-                                                <div className="text-right">
-                                                    <p className="text-xl font-black tracking-tighter italic">₹{(item.productId?.productPrice * item.quantity).toLocaleString()}</p>
-                                                    <p className="text-[10px] font-bold text-slate-300">₹{item.productId?.productPrice}</p>
+
+                                                <div className="sm:text-right mt-2 sm:mt-0 w-full sm:w-auto flex sm:flex-col justify-between items-end sm:justify-start">
+                                                    <div>
+                                                        <p className="text-lg md:text-xl font-black tracking-tighter italic text-slate-900">
+                                                            ₹{(item.productId?.productPrice * item.quantity).toLocaleString()}
+                                                        </p>
+                                                        <p className="text-[10px] font-bold text-slate-300 sm:text-right">
+                                                            ₹{item.productId?.productPrice?.toLocaleString()} / unit
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

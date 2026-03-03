@@ -3,11 +3,13 @@ import { Product } from "../models/productModel.js";
 import { Wishlist } from "../models/wishlistModel.js";
 import cloudinary from "../utils/cloudinary.js";
 import getDataUri from "../utils/dataUri.js";
+import sharp from "sharp";
 
 export const addProduct = async (req, res) => {
   try {
     const { productName, productDesc, productPrice, category, brand } =
       req.body;
+
     const userId = req.id;
 
     if (!productName || !productDesc || !productPrice || !category || !brand) {
@@ -18,18 +20,55 @@ export const addProduct = async (req, res) => {
     }
 
     let productImg = [];
+
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
-        const fileUri = getDataUri(file);
+
+        // ✅ Reject non-image files
+        if (!file.mimetype.startsWith("image/")) {
+          return res.status(400).json({
+            success: false,
+            message: "Only image files are allowed",
+          });
+        }
+
+        let quality = 80;
+        let compressedBuffer;
+
+        // ✅ Compress until file size < 2MB
+        while (true) {
+          compressedBuffer = await sharp(file.buffer, {
+            animated: true, // supports gif
+          })
+            .webp({ quality }) // convert everything to webp
+            .toBuffer();
+
+          const sizeInMB = compressedBuffer.length / (1024 * 1024);
+
+          if (sizeInMB <= 2 || quality <= 30) {
+            break;
+          }
+
+          quality -= 10; // reduce quality gradually
+        }
+
+        // ✅ Upload compressed image to Cloudinary
+        const fileUri = `data:image/webp;base64,${compressedBuffer.toString(
+          "base64"
+        )}`;
+
         const result = await cloudinary.uploader.upload(fileUri, {
           folder: "mern_products",
         });
+
         productImg.push({
           url: result.secure_url,
           public_id: result.public_id,
         });
       }
     }
+
+    // ✅ Create Product
     const newProduct = await Product.create({
       userId,
       productName,
@@ -42,9 +81,10 @@ export const addProduct = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Product Added succesfully",
+      message: "Product Added Successfully",
       product: newProduct,
     });
+
   } catch (error) {
     return res.status(500).json({
       success: false,

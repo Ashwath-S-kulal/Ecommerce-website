@@ -54,7 +54,7 @@ const removeImage = (index) => {
                                     <Card key={idx} className="relative group overflow-hidden">
                                         <CardContent>
                                             <img src={preview} alt="" width={200} height={200} className='w-full h-32 object-cover rounded-md' />
-                                            <button onClick={()=>removeImage(idx)} className='absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition'>
+                                            <button onClick={()=>removeImage(idx)} className='absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full '>
                                                 <X size={14} />
                                             </button>
                                         </CardContent>

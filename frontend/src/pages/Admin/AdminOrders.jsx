@@ -3,7 +3,7 @@ import axios from "axios";
 import {
   Package, Eye, Search, MapPin, Clock, CheckCircle2,
   CircleDot, Phone, Mail, ShoppingBag, CreditCard,
-  Receipt, X, Filter, ArrowUpDown
+  Receipt, X, Filter, ArrowUpDown, Calendar, User, Tag
 } from "lucide-react";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import ProductNullImg from "../../assets/Product Doesnt Exist.webp"
+import ProductNullImg from "../../assets/Product Doesnt Exist.webp";
 
 export default function ShowUserOrders() {
   const [orders, setOrders] = useState([]);
@@ -44,88 +44,59 @@ export default function ShowUserOrders() {
     fetchOrders();
   }, []);
 
-
   const processedOrders = orders.filter(order => {
-      const matchesSearch =
-        order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.user?.firstName?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch =
+      order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.user?.firstName?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesStatus =
-        statusFilter === "All" || order.status.toLowerCase() === statusFilter.toLowerCase();
+    const matchesStatus =
+      statusFilter === "All" || order.status.toLowerCase() === statusFilter.toLowerCase();
 
-      return matchesSearch && matchesStatus;
-    }).sort((a, b) => {
-      const dateA = new Date(a.createdAt);
-      const dateB = new Date(b.createdAt);
-      return sortOrder === "recent" ? dateB - dateA : dateA - dateB;
-    });
+    return matchesSearch && matchesStatus;
+  }).sort((a, b) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+    return sortOrder === "recent" ? dateB - dateA : dateA - dateB;
+  });
 
   const statusOptions = ["All", "Pending", "Confirmed", "Shipped", "Delivered", "Cancelled"];
 
+  const getStatusStyles = (status) => {
+    switch (status) {
+      case 'Delivered': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
+      case 'Cancelled': return 'bg-red-50 text-red-600 border-red-100';
+      case 'Pending': return 'bg-orange-50 text-orange-600 border-orange-100';
+      default: return 'bg-pink-50 text-pink-600 border-pink-100';
+    }
+  };
+
   if (loading) return (
-    <div className="min-h-screen bg-slate-50/30 p-6 md:p-10 animate-pulse">
+    <div className="min-h-screen bg-slate-50/30 p-4 md:p-10 animate-pulse">
       <div className="max-w-7xl mx-auto space-y-6">
-        
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div className="flex flex-col lg:flex-row justify-between gap-6">
           <div className="space-y-2">
             <div className="h-8 w-48 bg-slate-200 rounded-lg" />
             <div className="h-4 w-64 bg-slate-100 rounded" />
           </div>
-
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
-            <div className="h-10 w-full sm:w-64 bg-white border border-slate-200 rounded-xl" />
-            <div className="h-10 w-full sm:w-32 bg-white border border-slate-200 rounded-xl" />
-            <div className="h-10 w-full sm:w-32 bg-white border border-slate-200 rounded-xl" />
+          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+            <div className="h-10 w-full sm:w-64 bg-white border rounded-xl" />
+            <div className="h-10 w-full sm:w-32 bg-white border rounded-xl" />
           </div>
         </div>
-
-        <div className="bg-white border border-slate-200 rounded-[32px] overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-slate-50/50">
-                <tr>
-                  {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-                    <th key={i} className="p-5">
-                      <div className="h-2 w-16 bg-slate-200 rounded" />
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {[1, 2, 3, 4, 5].map((row) => (
-                  <tr key={row} className="border-t border-slate-50">
-                    <td className="p-5"><div className="h-3 w-20 bg-slate-100 rounded" /></td>
-                    <td className="p-5"><div className="h-4 w-24 bg-slate-200 rounded" /></td>
-                    <td className="p-5"><div className="h-3 w-16 bg-slate-100 rounded" /></td>
-                    <td className="p-5">
-                      <div className="flex items-center -space-x-3">
-                        <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white" />
-                        <div className="w-8 h-8 rounded-full bg-slate-200 border-2 border-white" />
-                        <div className="w-8 h-8 rounded-full bg-slate-100 border-2 border-white" />
-                      </div>
-                    </td>
-                    <td className="p-5"><div className="h-4 w-16 bg-slate-200 rounded" /></td>
-                    <td className="p-5"><div className="h-6 w-20 bg-slate-100 rounded-full" /></td>
-                    <td className="p-5 text-right"><div className="h-8 w-8 bg-slate-50 rounded-lg ml-auto" /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <div className="h-96 bg-white border rounded-[32px]" />
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-slate-50/30 p-6 md:p-10 text-slate-900">
+    <div className="min-h-screen bg-slate-50/30 p-4 md:p-10 text-slate-900">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tighter">
+            <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter">
               ALL <span className="text-pink-500 italic font-serif">ORDERS</span>
             </h1>
-            <p className="text-slate-500 text-sm font-medium">Management portal for all user transactions.</p>
+            <p className="text-slate-500 text-sm font-medium">Management portal for user transactions.</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
@@ -139,31 +110,33 @@ export default function ShowUserOrders() {
               />
             </div>
 
-            <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-1 shadow-sm w-full sm:w-auto">
-              <Filter size={14} className="text-slate-400" />
-              <select
-                className="bg-transparent text-sm font-bold outline-none py-1 cursor-pointer min-w-[100px]"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                {statusOptions.map(opt => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
-            </div>
+            <div className="flex flex-row gap-2 w-full sm:w-auto">
+              <div className="flex flex-1 items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-sm">
+                <Filter size={14} className="text-slate-400" />
+                <select
+                  className="bg-transparent text-sm font-bold outline-none cursor-pointer w-full"
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                >
+                  {statusOptions.map(opt => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              </div>
 
-            <Button
-              variant="outline"
-              className="w-full sm:w-auto flex items-center gap-2 rounded-xl font-bold text-sm bg-white"
-              onClick={() => setSortOrder(prev => prev === "recent" ? "oldest" : "recent")}
-            >
-              <ArrowUpDown size={14} />
-              {sortOrder === "recent" ? "Newest First" : "Oldest First"}
-            </Button>
+              <Button
+                variant="outline"
+                className="flex-1 sm:flex-none flex items-center gap-2 rounded-xl font-bold text-sm bg-white border-slate-200 px-4 py-2 h-auto"
+                onClick={() => setSortOrder(prev => prev === "recent" ? "oldest" : "recent")}
+              >
+                <ArrowUpDown size={14} />
+                <span className="hidden sm:inline">{sortOrder === "recent" ? "Newest" : "Oldest"}</span>
+              </Button>
+            </div>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+        <div className="hidden md:block bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader className="bg-slate-50/50">
@@ -207,11 +180,7 @@ export default function ShowUserOrders() {
                     </TableCell>
                     <TableCell className="p-5 font-black text-slate-900">₹{order.amount?.toLocaleString()}</TableCell>
                     <TableCell className="p-5">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase border 
-                        ${order.status === 'Delivered' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                          order.status === 'Cancelled' ? 'bg-red-50 text-red-600 border-red-100' :
-                            order.status === 'Pending' ? 'bg-orange-50 text-orange-600 border-orange-100' :
-                              'bg-pink-50 text-pink-600 border-pink-100'}`}>
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase border ${getStatusStyles(order.status)}`}>
                         {order.status}
                       </span>
                     </TableCell>
@@ -236,6 +205,73 @@ export default function ShowUserOrders() {
               </TableBody>
             </Table>
           </div>
+        </div>
+
+        <div className="md:hidden space-y-4">
+          {processedOrders.length > 0 ? processedOrders.map((order) => (
+            <div key={order._id} className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+              <div className="flex justify-between items-start">
+                <div className="space-y-1">
+                  <p className="font-mono text-[10px] text-slate-400 uppercase">#{order._id.slice(-8)}</p>
+                  <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                    <User size={14} className="text-slate-400" />
+                    {order?.user?.firstName || "Guest User"}
+                  </h3>
+                </div>
+                <span className={`px-2 py-1 rounded-full text-[9px] font-black uppercase border ${getStatusStyles(order.status)}`}>
+                  {order.status}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 py-3 border-y border-slate-50">
+                <div className="space-y-1">
+                  <p className="text-[10px] text-slate-400 flex items-center gap-1 uppercase font-bold tracking-tighter">
+                    <Calendar size={10} /> Date
+                  </p>
+                  <p className="text-xs font-semibold text-slate-700">
+                    {new Date(order.createdAt).toLocaleDateString('en-GB')}
+                  </p>
+                </div>
+                <div className="space-y-1 text-right">
+                  <p className="text-[10px] text-slate-400 flex items-center justify-end gap-1 uppercase font-bold tracking-tighter">
+                    <Tag size={10} /> Amount
+                  </p>
+                  <p className="text-sm font-black text-pink-500">
+                    ₹{order.amount?.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-center">
+                <div className="flex items-center -space-x-2">
+                  {order.products.slice(0, 4).map((item, i) => (
+                    <div key={i} className="w-7 h-7 rounded-full border-2 border-white bg-slate-100 overflow-hidden shadow-sm">
+                      <img
+                        src={item?.productId?.productImg?.[0]?.url || ProductNullImg}
+                        className="w-full h-full object-cover"
+                        alt=""
+                      />
+                    </div>
+                  ))}
+                  {order.products.length > 4 && (
+                    <div className="w-7 h-7 rounded-full border-2 border-white bg-slate-900 flex items-center justify-center text-[9px] text-white font-bold">
+                      +{order.products.length - 4}
+                    </div>
+                  )}
+                </div>
+                <Button
+                  onClick={() => navigate(`/dashboard/order-details/${order._id}`)}
+                  className="bg-slate-900 text-white hover:bg-slate-800 rounded-xl px-4 py-2 h-auto text-xs font-bold gap-2"
+                >
+                  Details <Eye size={14} />
+                </Button>
+              </div>
+            </div>
+          )) : (
+            <div className="bg-white p-10 text-center rounded-2xl border border-slate-100 text-slate-400 text-sm">
+              No orders found.
+            </div>
+          )}
         </div>
       </div>
     </div>
