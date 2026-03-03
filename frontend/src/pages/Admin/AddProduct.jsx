@@ -33,6 +33,34 @@ const AddProduct = () => {
     category: ""
   };
 
+  const uploadImagesToCloudinary = async () => {
+
+  const uploadedUrls = []
+
+  for (const image of productData.productImg) {
+
+    const formData = new FormData()
+    formData.append("file", image)
+    formData.append("upload_preset", "your_upload_preset")
+
+    const res = await fetch(
+      "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload",
+      {
+        method: "POST",
+        body: formData
+      }
+    )
+
+    const data = await res.json()
+    uploadedUrls.push({
+      url: data.secure_url,
+      public_id: data.public_id
+    })
+  }
+
+  return uploadedUrls
+}
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductData((prev) => ({
@@ -55,28 +83,41 @@ const AddProduct = () => {
       return;
     }
 
-    productData.productImg.forEach((img) => {
-      formData.append("files", img)
-    })
+   try {
+  setLoading(true)
 
-    try {
-      setLoading(true)
-      const res = await axios.post(`${import.meta.env.VITE_BASE_URI}/api/product/add`, formData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      })
-      if (res.data.success) {
-        dispatch(setProducts([...products, res.data.product]))
-        setProductData(initialState);      
-        toast.success(res.data.message)
+  // ✅ Upload images first
+  const uploadedImages = await uploadImagesToCloudinary()
+
+  const res = await axios.post(
+    `${import.meta.env.VITE_BASE_URI}/api/product/add`,
+    {
+      productName: productData.productName,
+      productPrice: productData.productPrice,
+      productDesc: productData.productDesc,
+      category: productData.category,
+      brand: productData.brand,
+      productImg: uploadedImages
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
       }
-    } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong")
-    } finally {
-      setLoading(false)
     }
+  )
+
+  if (res.data.success) {
+    dispatch(setProducts([...products, res.data.product]))
+    setProductData(initialState)
+    toast.success(res.data.message)
+  }
+
+} catch (error) {
+  console.log(error)
+  toast.error("Something went wrong")
+} finally {
+  setLoading(false)
+}
   }
 
   return (
