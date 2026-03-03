@@ -105,8 +105,6 @@ export default function AdminProduct() {
 
   return (
     <div className='p-4 md:p-8 flex flex-col gap-6 min-h-screen bg-[#f9fafb] pt-12 selection:bg-pink-100'>
-      
-      {/* Header & Controls */}
       <div className='flex flex-col lg:flex-row lg:items-center justify-between gap-6'>
         <div>
           <h1 className='text-2xl md:text-3xl font-black text-slate-900 tracking-tighter flex items-center gap-2'>
@@ -142,11 +140,8 @@ export default function AdminProduct() {
         </div>
       </div>
 
-      {/* Main Content Area */}
       <Card className='border-none shadow-xl shadow-slate-200/50 rounded-xl overflow-hidden bg-transparent md:bg-white'>
-        
-        {/* Desktop View: Table */}
-        <div className="hidden md:block overflow-x-auto">
+                <div className="hidden md:block overflow-x-auto">
           <table className='w-full text-left border-collapse'>
             <thead>
               <tr className='bg-slate-50/50 border-b border-slate-100'>
@@ -183,7 +178,6 @@ export default function AdminProduct() {
                     </td>
                     <td className='px-8 py-5 font-black text-slate-900'>₹{product?.productPrice.toLocaleString('en-IN')}</td>
                     <td className='px-8 py-5 text-right'>
-                        {/* Desktop Actions remain in the row */}
                         <div className='flex justify-end gap-2'>
                            <ActionButtons 
                             product={product} 
@@ -206,7 +200,6 @@ export default function AdminProduct() {
           </table>
         </div>
 
-        {/* Mobile View: Cards */}
         <div className='md:hidden flex flex-col gap-4'>
            {!products ? (
              Array.from({ length: 3 }).map((_, i) => (
@@ -262,9 +255,7 @@ export default function AdminProduct() {
   )
 }
 
-/**
- * Reusable Action Buttons component to avoid duplicate Dialog/AlertDialog logic
- */
+
 const ActionButtons = ({ product, open, setOpen, editProduct, setEditProduct, handleChange, handleSave, isUpdating, isDeleting, deleteProductHandler }) => (
   <>
     <Dialog open={open && editProduct?._id === product._id} onOpenChange={setOpen}>

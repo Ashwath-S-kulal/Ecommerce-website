@@ -103,11 +103,9 @@ const AddProduct = () => {
     formData.append("category", productData.category);
     formData.append("brand", productData.brand);
 
-    // 3. Compress each image before appending to FormData
     toast.info("Optimizing images for upload..."); 
     
     const compressedImagesPromises = productData.productImg.map(async (img) => {
-      // If the file is already small, browser-image-compression is smart enough to skip
       return await imageCompression(img, options);
     });
 
@@ -117,11 +115,10 @@ const AddProduct = () => {
       formData.append("files", img);
     });
 
-    // 4. Send the optimized payload
     const res = await axios.post(`${import.meta.env.VITE_BASE_URI}/api/product/add`, formData, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "multipart/form-data", // Explicitly set for file uploads
+        "Content-Type": "multipart/form-data", 
       }
     });
 

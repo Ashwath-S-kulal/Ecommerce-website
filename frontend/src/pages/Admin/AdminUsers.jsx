@@ -146,9 +146,7 @@ const AllUsers = () => {
   return (
     <div className="bg-[#f8fafc] min-h-screen pb-20 font-sans text-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-        
-        {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
           <div className="space-y-2 text-center md:text-left">
             <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">User Directory</h2>
             <p className="text-slate-500 max-w-md mx-auto md:mx-0">Manage registered team members and administrative accounts.</p>
@@ -161,11 +159,8 @@ const AllUsers = () => {
           </div>
         </div>
 
-        {/* Table/Card Container */}
         <div className="bg-transparent md:bg-white md:rounded-2xl md:shadow-xl md:shadow-slate-200/50 md:border md:border-slate-200 overflow-hidden">
-          
-          {/* Mobile View: Cards (Visible only on small screens) */}
-          <div className="grid grid-cols-1 gap-4 md:hidden">
+                    <div className="grid grid-cols-1 gap-4 md:hidden">
             {users.map((user) => (
               <div key={user._id} className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <div className="flex items-center gap-4 mb-4">
@@ -189,7 +184,6 @@ const AllUsers = () => {
             ))}
           </div>
 
-          {/* Desktop View: Table (Hidden on small screens) */}
           <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-100">
               <thead className="bg-slate-50/50">
@@ -238,7 +232,6 @@ const AllUsers = () => {
           </div>
         </div>
 
-        {/* Modal: Made Responsive */}
         {isModalOpen && (
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
             <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-2xl overflow-hidden max-h-[95vh] flex flex-col animate-in fade-in zoom-in duration-200">

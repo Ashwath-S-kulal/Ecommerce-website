@@ -32,13 +32,11 @@ const removeImage = (index) => {
                 <label htmlFor="file-upload" className='cursor-pointer'>Upload Images</label>
             </Button>
 
-            {/* image Preview */}
             {
                 productData.productImg.length > 0 && (
                     <div className='grid grid-cols-2 gap-4 mt-3 sm:grid-cols-3'>
                         {
                             productData.productImg.map((file, idx) => {
-                                // check if file is already a file (from input) or a DB object/string
                                 let preview
                                 if (file instanceof File) {
                                     preview = URL.createObjectURL(file)
