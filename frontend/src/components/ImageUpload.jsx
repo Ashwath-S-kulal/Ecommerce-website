@@ -4,99 +4,69 @@ import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { X } from 'lucide-react'
 import { Card, CardContent } from './ui/card'
-import imageCompression from "browser-image-compression"
 
 const ImageUpload = ({ productData, setProductData }) => {
 
-  // ✅ Compress Image
-  const compressImage = async (file) => {
-    const options = {
-      maxSizeMB: 2,
-      maxWidthOrHeight: 1200,
-      useWebWorker: true,
-    }
-
-    try {
-      return await imageCompression(file, options)
-    } catch (error) {
-      console.log("Compression error:", error)
-      return file
-    }
-  }
-
-  // ✅ Handle File Selection
-  const handleFiles = async (e) => {
-    const files = Array.from(e.target.files || [])
-
-    if (!files.length) return
-
-    // compress all images before saving to state
-    const compressedFiles = await Promise.all(
-      files.map(async (file) => await compressImage(file))
-    )
-
+    const handleFiles = (e) => {
+  const files = Array.from(e.target.files || [])
+  if (files.length) {
     setProductData((prev) => ({
       ...prev,
-      productImg: [...prev.productImg, ...compressedFiles]
+      productImg: [...prev.productImg, ...files]
     }))
   }
+}
+const removeImage = (index) => {
+  setProductData((prev) => {
+    const updatedImages = prev.productImg.filter((_, i) => i !== index);
+    return { ...prev, productImg: updatedImages }
+  })
+}
 
-  const removeImage = (index) => {
-    setProductData((prev) => {
-      const updatedImages = prev.productImg.filter((_, i) => i !== index)
-      return { ...prev, productImg: updatedImages }
-    })
-  }
+    return (
+        <div className='grid gap-2 my-5'>
+            <Label>Product Images</Label>
+            <Input type='file' id="file-upload" className="hidden" accept="image/*" multiple
+            onChange={handleFiles} />
+            <Button variant="outline">
+                <label htmlFor="file-upload" className='cursor-pointer'>Upload Images</label>
+            </Button>
 
-  return (
-    <div className='grid gap-2 my-5'>
-      <Label>Product Images</Label>
+            {/* image Preview */}
+            {
+                productData.productImg.length > 0 && (
+                    <div className='grid grid-cols-2 gap-4 mt-3 sm:grid-cols-3'>
+                        {
+                            productData.productImg.map((file, idx) => {
+                                // check if file is already a file (from input) or a DB object/string
+                                let preview
+                                if (file instanceof File) {
+                                    preview = URL.createObjectURL(file)
+                                } else if (typeof file === 'string') {
+                                    preview = file
+                                } else if (file?.url) {
+                                    preview = file.url
+                                } else {
+                                    return null
+                                }
 
-      <Input
-        type='file'
-        id="file-upload"
-        className="hidden"
-        accept="image/*"
-        multiple
-        onChange={handleFiles}
-      />
-
-      <Button variant="outline">
-        <label htmlFor="file-upload" className='cursor-pointer'>
-          Upload Images
-        </label>
-      </Button>
-
-      {/* Image Preview */}
-      {productData.productImg.length > 0 && (
-        <div className='grid grid-cols-2 gap-4 mt-3 sm:grid-cols-3'>
-          {productData.productImg.map((file, idx) => {
-
-            const preview = URL.createObjectURL(file)
-
-            return (
-              <Card key={idx} className="relative group overflow-hidden">
-                <CardContent>
-                  <img
-                    src={preview}
-                    alt=""
-                    className='w-full h-32 object-cover rounded-md'
-                  />
-
-                  <button
-                    onClick={() => removeImage(idx)}
-                    className='absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full'
-                  >
-                    <X size={14} />
-                  </button>
-                </CardContent>
-              </Card>
-            )
-          })}
+                                return (
+                                    <Card key={idx} className="relative group overflow-hidden">
+                                        <CardContent>
+                                            <img src={preview} alt="" width={200} height={200} className='w-full h-32 object-cover rounded-md' />
+                                            <button onClick={()=>removeImage(idx)} className='absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full '>
+                                                <X size={14} />
+                                            </button>
+                                        </CardContent>
+                                    </Card>
+                                )
+                            })
+                        }
+                    </div>
+                )
+            }
         </div>
-      )}
-    </div>
-  )
+    )
 }
 
 export default ImageUpload

@@ -17,16 +17,28 @@ export const addProduct = async (req, res) => {
       });
     }
 
-    const { productImg } = req.body;
+    let productImg = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const fileUri = getDataUri(file);
+        const result = await cloudinary.uploader.upload(fileUri, {
+          folder: "mern_products",
+        });
+        productImg.push({
+          url: result.secure_url,
+          public_id: result.public_id,
+        });
+      }
+    }
     const newProduct = await Product.create({
-  userId,
-  productName,
-  productDesc,
-  productPrice,
-  category,
-  brand,
-  productImg,
-});
+      userId,
+      productName,
+      productDesc,
+      productPrice,
+      category,
+      brand,
+      productImg,
+    });
 
     return res.status(200).json({
       success: true,
