@@ -9,6 +9,7 @@ import { Loader2, PackagePlus, Info, Tag, Layers, FileText, Camera } from 'lucid
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
+import imageCompression from 'browser-image-compression';
 
 const AddProduct = () => {
   const [productData, setProductData] = useState({
@@ -41,8 +42,60 @@ const AddProduct = () => {
     }))
   }
 
+  // const submitHandler = async (e) => {
+  //   e.preventDefault()
+  //   const formData = new FormData();
+  //   formData.append("productName", productData.productName);
+  //   formData.append("productPrice", productData.productPrice);
+  //   formData.append("productDesc", productData.productDesc);
+  //   formData.append("category", productData.category);
+  //   formData.append("brand", productData.brand);
+
+  //   if (productData.productImg.length === 0) {
+  //     toast.error("Please select at least one image");
+  //     return;
+  //   }
+
+  //   productData.productImg.forEach((img) => {
+  //     formData.append("files", img)
+  //   })
+
+  //   try {
+  //     setLoading(true)
+  //     const res = await axios.post(`${import.meta.env.VITE_BASE_URI}/api/product/add`, formData, {
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken}`
+  //       }
+  //     })
+  //     if (res.data.success) {
+  //       dispatch(setProducts([...products, res.data.product]))
+  //       setProductData(initialState);      
+  //       toast.success(res.data.message)
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
+
   const submitHandler = async (e) => {
-    e.preventDefault()
+  e.preventDefault();
+  
+  if (productData.productImg.length === 0) {
+    toast.error("Please select at least one image");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const options = {
+      maxSizeMB: 1,           // Target size 1MB
+      maxWidthOrHeight: 1920, // Maintain Full HD quality
+      useWebWorker: true,
+    };
+
     const formData = new FormData();
     formData.append("productName", productData.productName);
     formData.append("productPrice", productData.productPrice);
@@ -50,33 +103,40 @@ const AddProduct = () => {
     formData.append("category", productData.category);
     formData.append("brand", productData.brand);
 
-    if (productData.productImg.length === 0) {
-      toast.error("Please select at least one image");
-      return;
-    }
+    // 3. Compress each image before appending to FormData
+    toast.info("Optimizing images for upload..."); 
+    
+    const compressedImagesPromises = productData.productImg.map(async (img) => {
+      // If the file is already small, browser-image-compression is smart enough to skip
+      return await imageCompression(img, options);
+    });
 
-    productData.productImg.forEach((img) => {
-      formData.append("files", img)
-    })
+    const compressedFiles = await Promise.all(compressedImagesPromises);
 
-    try {
-      setLoading(true)
-      const res = await axios.post(`${import.meta.env.VITE_BASE_URI}/api/product/add`, formData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      })
-      if (res.data.success) {
-        dispatch(setProducts([...products, res.data.product]))
-        setProductData(initialState);      
-        toast.success(res.data.message)
+    compressedFiles.forEach((img) => {
+      formData.append("files", img);
+    });
+
+    // 4. Send the optimized payload
+    const res = await axios.post(`${import.meta.env.VITE_BASE_URI}/api/product/add`, formData, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "multipart/form-data", // Explicitly set for file uploads
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false)
+    });
+
+    if (res.data.success) {
+      dispatch(setProducts([...products, res.data.product]));
+      setProductData(initialState);      
+      toast.success(res.data.message);
     }
+  } catch (error) {
+    console.error("Upload failed:", error);
+    toast.error(error.response?.data?.message || "Something went wrong during upload");
+  } finally {
+    setLoading(false);
   }
+};
 
   return (
     <div className='min-h-screen bg-slate-50/50 pb-20'>
