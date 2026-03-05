@@ -53,25 +53,55 @@ export const addProduct = async (req, res) => {
   }
 };
 
+// export const getAllProduct = async (req, res) => {
+//   try {
+//     const products = await Product.find();
+//     if (!products) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "no product avilable",
+//         products: [],
+//       });
+//     }
+//     return res.status(200).json({
+//       success: true,
+//       products,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
 export const getAllProduct = async (req, res) => {
   try {
-    const products = await Product.find();
-    if (!products) {
-      return res.status(404).json({
-        success: false,
-        message: "no product avilable",
-        products: [],
-      });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const skip = (page - 1) * limit;
+    const query = {};
+    if (req.query.category && req.query.category !== "All") {
+      query.category = req.query.category;
     }
+    if (req.query.brand && req.query.brand !== "All") {
+      query.brand = req.query.brand;
+    }
+
+    const products = await Product.find(query)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const totalProducts = await Product.countDocuments(query);
+
     return res.status(200).json({
       success: true,
       products,
+      hasMore: skip + products.length < totalProducts,
     });
   } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
