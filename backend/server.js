@@ -8,6 +8,8 @@ import wishlistRoute from "./routes/wishlistRoute.js";
 import orderRoute from "./routes/orderRoute.js";
 import notificationRoutes from "./routes/notificationRoute.js";
 import addressRoutes from "./routes/addressRoute.js";
+import statusRoute from "./routes/statusRoute.js"
+
 import cors from "cors";
 
 dotenv.config();
@@ -34,6 +36,7 @@ app.use("/api/wishlist", wishlistRoute);
 app.use("/api/order", orderRoute);
 app.use("/api/notification", notificationRoutes);
 app.use("/api/address", addressRoutes);
+app.use("/api/status", statusRoute);
 
 export default app;
 
