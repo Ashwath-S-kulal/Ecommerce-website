@@ -55,22 +55,17 @@ export const addProduct = async (req, res) => {
 
 export const getAllProduct = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 12;
-    const skip = (page - 1) * limit;
-
-    // Fetch products for current page and total count
-    const [products, totalProducts] = await Promise.all([
-      Product.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
-      Product.countDocuments()
-    ]);
-
+    const products = await Product.find();
+    if (!products) {
+      return res.status(404).json({
+        success: false,
+        message: "no product avilable",
+        products: [],
+      });
+    }
     return res.status(200).json({
       success: true,
       products,
-      totalPages: Math.ceil(totalProducts / limit),
-      currentPage: page,
-      totalProducts
     });
   } catch (error) {
     return res.status(500).json({
