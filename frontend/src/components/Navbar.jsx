@@ -104,7 +104,7 @@ export default function Navbar() {
                 <NavLink to={`/profile/${user._id}`} className={({ isActive }) => `w-8 h-8 rounded-full border-2 shrink-0 transition-all ${isActive ? "border-pink-500 scale-110" : "border-transparent"}`}>
                   <img src={user.profilePic || "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"} className="w-full h-full rounded-full object-cover" />
                 </NavLink>
-                <button onClick={logoutHandler} className="p-2 text-zinc-400 hover:text-red-500 transition-colors">
+                <button onClick={logoutHandler} className="p-2 text-zinc-400 hover:text-red-500 transition-colors cursor-pointer">
                   <LogOut size={18} />
                 </button>
               </div>
