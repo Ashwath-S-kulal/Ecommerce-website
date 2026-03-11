@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Bell, Clock, MapPin, ArrowRight, CheckCircle2, Calendar, ShoppingBag, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {  markSingleRead, setNotifications } from '@/redux/productSlice';
+import { markSingleRead, setNotifications } from '@/redux/productSlice';
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "../assets/Product Doesnt Exist.webp"
 
@@ -13,22 +13,42 @@ export default function Notifications() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const accessToken = localStorage.getItem('accessToken');
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const limit = 15;
 
-    const fetchNotifications = async () => {
+    const fetchNotifications = async (pageNum = 1) => {
         if (!accessToken) return;
+
         try {
-            const res = await axios.get(`${import.meta.env.VITE_BASE_URI}/api/notification/get`, {
-                headers: { Authorization: `Bearer ${accessToken}` }
-            });
+            const res = await axios.get(
+                `${import.meta.env.VITE_BASE_URI}/api/notification/get?page=${pageNum}&limit=${limit}`,
+                {
+                    headers: { Authorization: `Bearer ${accessToken}` }
+                }
+            );
+
             if (res.data.success) {
-                dispatch(setNotifications(res.data.notifications));
+
+                if (pageNum === 1) {
+                    dispatch(setNotifications(res.data.notifications));
+                } else {
+                    dispatch(setNotifications([...notifications, ...res.data.notifications]));
+                }
+
+                setTotalPages(res.data.totalPages);
             }
+
         } catch (error) {
             console.error("Error fetching notifications", error);
         } finally {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchNotifications(1);
+    }, []);
 
     const handleRead = async (id, orderId) => {
         dispatch(markSingleRead(id));
@@ -149,8 +169,8 @@ export default function Notifications() {
                                                 key={n._id}
                                                 onClick={() => handleRead(n._id, order?._id)}
                                                 className={`group relative bg-white rounded-[20px] md:rounded-[24px] p-3 md:p-4 border transition-all duration-300 cursor-pointer flex items-center gap-3 md:gap-4 ${n.isRead
-                                                        ? "border-transparent opacity-70 grayscale-[0.4]"
-                                                        : "border-zinc-100 shadow-sm hover:shadow-md md:scale-[1.01]"
+                                                    ? "border-transparent opacity-70 grayscale-[0.4]"
+                                                    : "border-zinc-100 shadow-sm hover:shadow-md md:scale-[1.01]"
                                                     }`}
                                             >
                                                 <div className="relative shrink-0">
@@ -195,6 +215,21 @@ export default function Notifications() {
                                 </div>
                             </div>
                         ))}
+
+                        {page < totalPages && (
+                            <div className="flex justify-center mt-10">
+                                <button
+                                    onClick={() => {
+                                        const nextPage = page + 1;
+                                        setPage(nextPage);
+                                        fetchNotifications(nextPage);
+                                    }}
+                                    className="px-6 py-2 bg-zinc-900 text-white rounded-xl hover:bg-blue-600 transition"
+                                >
+                                    Load More
+                                </button>
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center py-16 md:py-20 bg-white rounded-[30px] md:rounded-[40px] border border-dashed border-zinc-200 mx-2">

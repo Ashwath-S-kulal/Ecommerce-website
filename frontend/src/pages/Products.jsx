@@ -50,42 +50,68 @@ export default function Products() {
     const [minPrice, setMinPrice] = useState(0)
     const [maxPrice, setMaxPrice] = useState(0)
     const [absoluteMax, setAbsoluteMax] = useState(0)
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerRow, setItemsPerRow] = useState(6);
 
     const dispatch = useDispatch()
     const categories = ["All", ...new Set(allProducts.map(p => p.category).filter(Boolean))];
     const brands = ["All", ...new Set(allProducts.map(p => p.brand).filter(Boolean))];
 
-    useEffect(() => {
-        const handleResize = () => {
-            const width = window.innerWidth;
-            if (width >= 1280) setItemsPerRow(6);
-            else if (width >= 1024) setItemsPerRow(5);
-            else if (width >= 768) setItemsPerRow(4);
-            else setItemsPerRow(2); 
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
 
-    const getAllProducts = async () => {
+
+
+    const getAllProducts = async (pageNumber = 1) => {
         try {
-            setLoading(true);
-            const res = await axios.get(`${import.meta.env.VITE_BASE_URI}/api/product/getallproducts`);
+
+            if (pageNumber === 1) {
+                setLoading(true);      
+            } else {
+                setLoadingMore(true);  
+            }
+            const res = await axios.get(
+                `${import.meta.env.VITE_BASE_URI}/api/product/getallproducts`,
+                {
+                    params: {
+                        page: pageNumber,
+                        limit: 12
+                    }
+                }
+            );
             if (res.data.success) {
                 const fetched = res.data.products;
-                setAllProducts(fetched);
-                const highest = Math.max(...fetched.map(p => p.productPrice), 0);
-                setAbsoluteMax(highest);
-                setMaxPrice(highest);
-                dispatch(setProducts(fetched))
+                if (pageNumber === 1) {
+                    setAllProducts(fetched);
+                    dispatch(setProducts(fetched));
+                } else {
+                    const updated = [...products, ...fetched];
+                    setAllProducts(updated);
+                    dispatch(setProducts(updated));
+                }
+                setHasMore(res.data.hasMore);
+                if (pageNumber === 1) {
+                    const highest = Math.max(...fetched.map(p => p.productPrice), 0);
+                    setAbsoluteMax(highest);
+                    setMaxPrice(highest);
+                }
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
             toast.error("Failed to fetch products");
-        } finally { setLoading(false) }
+        } finally {
+            setLoading(false);
+            setLoadingMore(false);
+        }
+    };
+
+    useEffect(() => {
+        getAllProducts(1);
+    }, []);
+
+    const loadMoreProducts = () => {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        getAllProducts(nextPage);
     };
 
     useEffect(() => {
@@ -98,32 +124,11 @@ export default function Products() {
         if (sortOrder === "lowtohigh") filtered.sort((a, b) => a.productPrice - b.productPrice)
         else if (sortOrder === "hightolow") filtered.sort((a, b) => b.productPrice - a.productPrice)
         dispatch(setProducts(filtered))
-        setCurrentPage(1);
     }, [search, category, brand, sortOrder, minPrice, maxPrice, allProducts, dispatch])
 
     useEffect(() => { getAllProducts(); }, []);
 
-    const itemsPerPage = itemsPerRow === 2 ? 12 : itemsPerRow * 2;
-    const totalPages = Math.ceil(products.length / itemsPerPage);
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
 
-    const getPaginationRange = () => {
-        const range = [];
-        const delta = 1;
-        for (let i = 1; i <= totalPages; i++) {
-            if (i === 1 || i === totalPages || (i >= currentPage - delta && i <= currentPage + delta)) range.push(i);
-            else if (range[range.length - 1] !== "...") range.push("...");
-        }
-        return range;
-    };
-
-    const handlePageChange = (page) => {
-        if (page === "...") return;
-        setCurrentPage(page);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
 
     const recentArrivals = [...allProducts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 8);
 
@@ -134,14 +139,15 @@ export default function Products() {
 
     return (
         <div className='min-h-screen bg-[#F9FAFB] pt-20 pb-10 px-4 md:px-6'>
-            <div className='max-w-7xl mx-auto'>
+            <div className='max-w-full mx-3 md:mx-10'>
                 <div className='flex items-end justify-between mb-8 px-1'>
                     <div className='flex items-center gap-2'>
                         <div className='w-1 h-6 bg-black rounded-full' />
                         <h1 className='text-xl md:text-3xl font-black tracking-tight text-gray-900 '>Products</h1>
                     </div>
                     <p className='text-[10px] font-bold text-gray-400 uppercase tracking-widest'>
-                        Page {currentPage} of {totalPages || 1}
+                        {/* Changed .length() to .length and added ?. for safety */}
+                        Products found {products?.length || 0}
                     </p>
                 </div>
 
@@ -205,10 +211,11 @@ export default function Products() {
                 <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 md:gap-2 '>
                     {loading ? (
                         <WishlistSkeleton />
-                    ) : currentProducts.length > 0 ? (
-                        currentProducts.map((p) => (
+                    ) : products.length > 0 ? (
+                        products.map((p) => (
                             <div key={p._id} className="transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]">
                                 <ProductCard product={p} />
+
                             </div>
                         ))
                     ) : (
@@ -219,17 +226,18 @@ export default function Products() {
                     )}
                 </div>
 
-                {!loading && totalPages > 1 && (
-                    <div className='mt-16 flex justify-center items-center gap-1.5'>
-                        <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)} className='p-2 rounded-lg border border-gray-100 bg-white hover:bg-black hover:text-white disabled:opacity-20 transition-all shadow-sm'><ChevronLeft size={16} /></button>
-                        <div className='flex items-center gap-1'>
-                            {getPaginationRange().map((page, index) => (
-                                <button key={index} onClick={() => handlePageChange(page)} className={`w-8 h-8 rounded-lg text-[10px] font-bold transition-all ${currentPage === page ? 'bg-black text-white shadow-md' : 'bg-white border border-gray-100 text-gray-500 hover:border-black'}`}>{page}</button>
-                            ))}
-                        </div>
-                        <button disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)} className='p-2 rounded-lg border border-gray-100 bg-white hover:bg-black hover:text-white disabled:opacity-20 transition-all shadow-sm'><ChevronRight size={16} /></button>
+                {!loading && hasMore && (
+                    <div className="flex justify-center mt-10">
+                        <button
+                            onClick={loadMoreProducts}
+                            disabled={loadingMore}
+                            className="px-6 py-2 bg-black text-white rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50"
+                        >
+                            {loadingMore ? "Loading..." : "Load More"}
+                        </button>
                     </div>
                 )}
+
 
                 {!loading && recentArrivals.length > 0 && (
                     <HorizontalScroller title="Recent Arrivals" products={recentArrivals} icon={Sparkles} />
