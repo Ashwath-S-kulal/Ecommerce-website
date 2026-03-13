@@ -53,27 +53,27 @@ export const addProduct = async (req, res) => {
   }
 };
 
-// export const getAllProduct = async (req, res) => {
-//   try {
-//     const products = await Product.find();
-//     if (!products) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "no product avilable",
-//         products: [],
-//       });
-//     }
-//     return res.status(200).json({
-//       success: true,
-//       products,
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: error.message,
-//     });
-//   }
-// };
+export const getAllProductOnce = async (req, res) => {
+  try {
+    const products = await Product.find();
+    if (!products) {
+      return res.status(404).json({
+        success: false,
+        message: "no product avilable",
+        products: [],
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 
 export const getAllProduct = async (req, res) => {
