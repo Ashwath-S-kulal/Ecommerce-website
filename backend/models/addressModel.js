@@ -13,7 +13,7 @@ const addressSchema = new mongoose.Schema({
   city: { type: String, required: true },
   state: { type: String },
   zip: { type: String, required: true },
-  country: { type: String },
+  country: { type: String,default: "India" },
 }, { timestamps: true });
 
 export const Address = mongoose.model("Address", addressSchema);

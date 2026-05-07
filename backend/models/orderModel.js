@@ -28,7 +28,7 @@ const orderSchema = new mongoose.Schema(
       email: { type: String },
       street: { type: String, required: true },
       city: { type: String, required: true },
-      state: { type: String, required: true },
+      state: { type: String},
       zip: { type: String, required: true },
       country: { type: String, default: "India" },
     },
