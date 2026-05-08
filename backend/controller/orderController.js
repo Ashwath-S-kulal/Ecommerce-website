@@ -26,7 +26,6 @@ export const createOrder = async (req, res) => {
       !address.phone ||
       !address.street ||
       !address.city ||
-      !address.state ||
       !address.zip
     ) {
       return res.status(400).json({
