@@ -251,14 +251,14 @@ export const login = async (req, res) => {
       { id: existingUser._id },
       process.env.JWT_SECRET,
       {
-        expiresIn: "10m",
+        expiresIn: "100d",
       }
     );
     const refreshToken = jwt.sign(
       { id: existingUser._id },
       process.env.JWT_SECRET,
       {
-        expiresIn: "10m",
+        expiresIn: "50d",
       }
     );
     existingUser.isLoggedIn = true;
